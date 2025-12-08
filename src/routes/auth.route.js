@@ -1,10 +1,11 @@
+import express from "express";
 import AuthController from "../controllers/auth.controller.js";
 
 class AuthRoute {
   static build() {
-    const router = express.router();
-    router.post("/register", AuthController.register.bind(authController));
-    router.post("/login", AuthController.login.bind(authController));
+    const router = express.Router();
+    router.post("/register", AuthController.register.bind(AuthController));
+    router.post("/login", AuthController.login.bind(AuthController));
 
     return router;
   }

@@ -1,4 +1,4 @@
-import Jwt from "jsonwebtoken.js";
+import Jwt from "jsonwebtoken";
 import Config from "../config/config.js";
 
 class JwtUtil {

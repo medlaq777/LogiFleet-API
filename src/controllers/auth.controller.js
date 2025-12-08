@@ -19,6 +19,7 @@ class AuthController {
     try {
       const payload = req.body;
       const result = await this.service.login(payload);
+      res.status(200).json(result);
     } catch (err) {
       next(err);
     }
