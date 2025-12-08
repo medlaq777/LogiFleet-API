@@ -2,10 +2,13 @@ import "dotenv/config";
 import express from "express";
 import Config from "./config/config.js";
 import db from "./config/db.js";
+import AuthRoute from "./routes/auth.route.js";
 
 const app = express();
 app.use(express.json());
 await db.connect();
+
+app.use("/api", AuthRoute.build());
 
 app.use((err, res) => {
   console.error(err);
