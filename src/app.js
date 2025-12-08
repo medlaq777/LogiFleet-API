@@ -10,7 +10,7 @@ await db.connect();
 
 app.use("/api", AuthRoute.build());
 
-app.use((err, res) => {
+app.use((err, req, res, next) => {
   console.error(err);
   const status = err.status || 500;
   res.status(status).json({ message: err.message });
