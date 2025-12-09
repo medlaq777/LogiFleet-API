@@ -3,6 +3,7 @@ import express from "express";
 import Config from "./config/config.js";
 import db from "./config/db.js";
 import AuthRoute from "./routes/auth.route.js";
+import TruckRoute from "./routes/truck.route.js";
 
 const app = express();
 const port = Config.PORT;
@@ -10,6 +11,7 @@ app.use(express.json());
 await db.connect();
 
 app.use("/api", AuthRoute.build());
+app.use("/api", TruckRoute.build());
 
 app.use((err, req, res, next) => {
   console.error(err);
