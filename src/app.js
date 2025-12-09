@@ -5,6 +5,7 @@ import db from "./config/db.js";
 import AuthRoute from "./routes/auth.route.js";
 
 const app = express();
+const port = Config.PORT;
 app.use(express.json());
 await db.connect();
 
@@ -16,7 +17,6 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message: err.message });
 });
 
-const port = Config.PORT;
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });

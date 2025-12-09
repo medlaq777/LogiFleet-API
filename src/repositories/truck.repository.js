@@ -9,5 +9,9 @@ class TruckRepository extends VehicleRepository {
   async findAvailable() {
     return this.model.find({ status: "Disponible" });
   }
+
+  async findByLicensePlate(licensePlate) {
+    return this.model.find({ licensePlate: licensePlate });
+  }
 }
 export default new TruckRepository();
