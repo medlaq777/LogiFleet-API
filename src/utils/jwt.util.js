@@ -8,7 +8,7 @@ class JwtUtil {
     });
   }
   static verifyToken(token) {
-    return Jwt.verifyToken(token, Config.JWTSECRET);
+    return Jwt.verify(token, Config.JWTSECRET);
   }
 }
 export default JwtUtil;

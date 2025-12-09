@@ -3,7 +3,7 @@ class AuthMiddleware {
   static protect(req, res, next) {
     try {
       const header = req.headers.authorization;
-      if (!header?.startswith("Bearer ")) {
+      if (!header?.startsWith("Bearer ")) {
         const err = new Error("Unauthorized");
         err.status = 401;
         throw err;
