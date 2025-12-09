@@ -70,6 +70,16 @@ class AuthService {
     return { user: this.sanitize(user), token };
   }
 
+  async profile(userId) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      const err = new Error("User Not Found");
+      err.status = 404;
+      throw err;
+    }
+    return this.sanitize(user);
+  }
+
   sanitize(user) {
     if (!user || typeof user !== "object") return {};
     const obj = user?.toObject?.() ?? user;
