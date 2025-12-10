@@ -5,7 +5,7 @@ const TruckSchema = new mongoose.Schema(
     licensePlate: { type: String, required: true, unique: true, trim: true },
     make: { type: String, required: true },
     model: { type: String, required: true },
-    capacity: { type: Number, required: true, min: 1 },
+    capacity: { type: Number, required: true, min: 1, max: 1000 },
     currentMileage: { type: Number, default: 0, min: 0 },
     fuelType: {
       type: String,
