@@ -20,7 +20,7 @@ class TrailerRoute {
       TrailerController.updateTrailer.bind(TrailerController)
     );
     router.delete(
-      "/trucks/:id",
+      "/trailers/:id",
       TrailerController.deleteTrailer.bind(TrailerController)
     );
     return router;
