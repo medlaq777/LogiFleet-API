@@ -4,6 +4,7 @@ import Config from "./config/config.js";
 import db from "./config/db.js";
 import AuthRoute from "./routes/auth.route.js";
 import TruckRoute from "./routes/truck.route.js";
+import TrailerRoute from "./routes/trailer.route.js";
 
 const app = express();
 const port = Config.PORT;
@@ -12,6 +13,7 @@ await db.connect();
 
 app.use("/api", AuthRoute.build());
 app.use("/api", TruckRoute.build());
+app.use("/api", TrailerRoute.build());
 
 app.use((err, req, res, next) => {
   console.error(err);
