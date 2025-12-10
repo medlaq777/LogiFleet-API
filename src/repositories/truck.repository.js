@@ -11,7 +11,7 @@ class TruckRepository extends VehicleRepository {
   }
 
   async findByLicensePlate(licensePlate) {
-    return this.model.find({ licensePlate: licensePlate });
+    return this.model.findOne({ licensePlate: licensePlate });
   }
 }
 export default new TruckRepository();

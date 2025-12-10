@@ -24,11 +24,7 @@ class TruckService {
       throw err;
     }
 
-    return this.truckRepository.create(
-      data.licensePlate,
-      data.make,
-      data.model
-    );
+    return this.truckRepository.create(data);
   }
 
   async updateTruck(id, data) {
@@ -54,7 +50,7 @@ class TruckService {
       err.status = 404;
       throw err;
     }
-    if (data.status === "En service") {
+    if (truck.status === "En service") {
       const err = new Error("Cannot delete truck in service");
       err.status = 400;
       throw err;

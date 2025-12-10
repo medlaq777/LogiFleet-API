@@ -25,7 +25,7 @@ class TruckController {
 
   async updateTruck(req, res, next) {
     try {
-      const truck = await this.service.updateTruck(req.body);
+      const truck = await this.service.updateTruck(req.params.id, req.body);
       res.status(200).json({ success: true, data: truck });
     } catch (err) {
       next(err);
@@ -34,7 +34,7 @@ class TruckController {
 
   async deleteTruck(req, res, next) {
     try {
-      await this.service.deleteTruck(req.body);
+      await this.service.deleteTruck(req.params.id);
       res.status(200).json({ success: true, message: "Truck Was Deleted" });
     } catch (err) {
       next(err);
