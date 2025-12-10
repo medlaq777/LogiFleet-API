@@ -6,6 +6,7 @@ import AuthRoute from "./routes/auth.route.js";
 import TruckRoute from "./routes/truck.route.js";
 import TrailerRoute from "./routes/trailer.route.js";
 import TireRoute from "./routes/tire.route.js";
+import TripRoute from "./routes/trip.route.js";
 const app = express();
 const port = Config.PORT;
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use("/api", AuthRoute.build());
 app.use("/api", TruckRoute.build());
 app.use("/api", TrailerRoute.build());
 app.use("/api", TireRoute.build());
+app.use("/api", TripRoute.build());
 
 app.use((err, req, res, next) => {
   console.error(err);
