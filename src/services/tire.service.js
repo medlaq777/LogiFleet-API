@@ -6,7 +6,7 @@ class TireService {
   }
 
   async getAllTire() {
-    return this.tireRepository.getAllTire();
+    return this.tireRepository.findAll();
   }
 
   async createTire(data) {
@@ -17,9 +17,9 @@ class TireService {
       err.status = 400;
       throw err;
     }
-    const existTire = await this.tireRepository.findBySerialNumber({
-      serialNumber: serialNumber,
-    });
+    const existTire = await this.tireRepository.findBySerialNumber(
+      data.serialNumber
+    );
     if (existTire) {
       const err = new Error("Tire with serial number Already existe");
       err.status = 409;
@@ -39,11 +39,10 @@ class TireService {
       throw err;
     }
 
-    if (data.locationType && data.locationType !== tire.locationType) {
-      const err = new Error("use install or remove methods");
-      err.status = 400;
-      throw err;
-    }
+    delete data.locationType;
+    delete data.locationId;
+    delete data.position;
+
     return this.tireRepository.update(id, data);
   }
 
@@ -62,6 +61,46 @@ class TireService {
     }
 
     return this.tireRepository.delete(id);
+  }
+
+  async installTire(id, data) {
+    const tire = await this.tireRepository.findById(id);
+    if (!tire) {
+      const err = new Error("Tire Not Found");
+      err.status = 404;
+      throw err;
+    }
+
+    if (tire.locationType !== "Stock") {
+      const err = new Error("Tire must be in Stock to be installed");
+      err.status = 400;
+      throw err;
+    }
+
+    return this.tireRepository.assignTire(
+      id,
+      data.locationType,
+      data.locationId,
+      data.position,
+      data.installedMileage
+    );
+  }
+
+  async removeTire(id) {
+    const tire = await this.tireRepository.findById(id);
+    if (!tire) {
+      const err = new Error("Tire Not Found");
+      err.status = 404;
+      throw err;
+    }
+
+    if (tire.locationType === "Stock") {
+      const err = new Error("Tire is already in Stock");
+      err.status = 400;
+      throw err;
+    }
+
+    return this.tireRepository.assignTire(id, "Stock", null, null, null);
   }
 }
 export default new TireService(TireRepository);

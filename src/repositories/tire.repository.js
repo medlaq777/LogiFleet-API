@@ -6,8 +6,8 @@ class TireRepository extends VehicleRepository {
     super(Tire);
   }
 
-  async findBySerialNumber() {
-    return this.model.find({ serialNumber: serialNumber });
+  async findBySerialNumber(serialNumber) {
+    return this.model.findOne({ serialNumber: serialNumber });
   }
 
   async findInStock() {
