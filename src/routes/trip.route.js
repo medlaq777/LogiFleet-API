@@ -1,32 +1,32 @@
 import express from "express";
-import { protect, authorize } from "../middlewares/auth.middleware.js";
+import AuthMiddleware from "../middlewares/auth.middleware.js";
 import TripController from "../controllers/trip.controller.js";
 
 class TripRoute {
   static build() {
     const router = express.Router();
-    router.use(protect);
+    router.use(AuthMiddleware.protect);
+    router.get(
+      "/trip",
+      AuthMiddleware.authorizeRole("Driver"),
+      TripController.getMyTrips.bind(TripController)
+    );
 
     router.post(
       "/trip",
-      authorize("Admin"),
+      AuthMiddleware.authorizeRole("Driver"),
       TripController.createTrip.bind(TripController)
-    );
-
-    router.get(
-      "/trips",
-      authorize("Driver", TripController.getMyTrips.bind(TripController))
     );
 
     router.put(
       "/trip/:id",
-      authorize("Driver"),
+      AuthMiddleware.authorizeRole("Driver"),
       TripController.updateTrip.bind(TripController)
     );
 
     router.get(
       "/trip/:id/pdf",
-      authorize("Driver"),
+      AuthMiddleware.authorizeRole("Driver"),
       TripController.downloadMissionOrder.bind(TripController)
     );
 

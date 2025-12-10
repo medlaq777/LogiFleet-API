@@ -38,6 +38,7 @@ class AuthService {
       id: user.id,
       fullName: user.firstName + user.lastName,
       email: user.email,
+      role: user.role,
     });
     return { user: this.sanitize(user), token };
   }
@@ -64,6 +65,7 @@ class AuthService {
     }
     const token = JwtUtil.generateToken({
       id: user.id,
+      fullName: user.firstName + user.lastName,
       email: user.email,
       role: user.role,
     });

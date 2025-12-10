@@ -9,7 +9,7 @@ class TripService {
     this.pdfGenerator = pdfGenerator;
   }
 
-  async createTripe(data, adminId) {
+  async createTrip(data, adminId) {
     const truck = await this.truckService.findById(data.truckId);
     if (!truck) {
       const err = new Error("Truck ID required");
@@ -49,7 +49,7 @@ class TripService {
     return this.tripRepository.update(id, updateData);
   }
 
-  async _finalizeTripe(trip, data) {
+  async _finalizeTrip(trip, data) {
     if (!data.endMileage) {
       const err = new Error("Required End Mileage for complete the trip ");
       err.status = 400;
@@ -68,7 +68,7 @@ class TripService {
     });
   }
 
-  async generatMissionOrderPdf(id, driverId) {
+  async generateMissionOrderPdf(id, driverId) {
     const trip = await this.tripRepository.findByIdPopulated(id);
     if (!trip) {
       const err = new Error("Trip Not Found");

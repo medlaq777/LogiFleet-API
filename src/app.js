@@ -19,6 +19,7 @@ app.use("/api", TireRoute.build());
 app.use("/api", TripRoute.build());
 
 app.use((err, req, res, next) => {
+  console.error("Error on", req.method, req.path);
   console.error(err);
   const status = err.status || 500;
   res.status(status).json({ message: err.message });
