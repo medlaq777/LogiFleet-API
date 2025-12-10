@@ -1,4 +1,4 @@
-import TrailerService from "../services/truck.service.js";
+import TrailerService from "../services/trailer.service.js";
 
 class TrailerController {
   constructor(service) {

@@ -4,7 +4,7 @@ class TrailerService {
     this.trailerRepository = trailerRepository;
   }
 
-  async getAlltrailers() {
+  async getAllTrailers() {
     return this.trailerRepository.findAll();
   }
 
