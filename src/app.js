@@ -7,6 +7,8 @@ import TruckRoute from "./routes/truck.route.js";
 import TrailerRoute from "./routes/trailer.route.js";
 import TireRoute from "./routes/tire.route.js";
 import TripRoute from "./routes/trip.route.js";
+import MaintenanceRoute from "./routes/maintenance.route.js";
+import ReportRoute from "./routes/report.route.js";
 const app = express();
 const port = Config.PORT;
 app.use(express.json());
@@ -17,6 +19,8 @@ app.use("/api", TripRoute.build());
 app.use("/api", TrailerRoute.build());
 app.use("/api", TireRoute.build());
 app.use("/api", TruckRoute.build());
+app.use("/api", MaintenanceRoute.build());
+app.use("/api", ReportRoute.build());
 
 app.use((err, req, res, next) => {
   console.error("Error on", req.method, req.path);

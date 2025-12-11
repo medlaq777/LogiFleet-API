@@ -1,19 +1,38 @@
 import TripRepository from "../repositories/trip.repository.js";
 import TruckService from "./truck.service.js";
+import TireService from "./tire.service.js";
 import PdfGenerator from "../utils/pdf.util.js";
+import MaintenanceRepository from "../repositories/maintenance.repository.js";
+import AlertRepository from "../repositories/alert.repository.js";
 
 class TripService {
-  constructor(tripRepository, truckService, pdfGenerator) {
+  constructor(
+    tripRepository,
+    truckService,
+    tireService,
+    pdfGenerator,
+    maintenanceRepository,
+    alertRepository
+  ) {
     this.tripRepository = tripRepository;
     this.truckService = truckService;
+    this.tireService = tireService;
     this.pdfGenerator = pdfGenerator;
+    this.maintenanceRepository = maintenanceRepository;
+    this.alertRepository = alertRepository;
   }
 
   async createTrip(data, adminId) {
+    if (!data.truckId) {
+      const err = new Error("Truck ID is required");
+      err.status = 400;
+      throw err;
+    }
+
     const truck = await this.truckService.findById(data.truckId);
     if (!truck) {
-      const err = new Error("Truck ID required");
-      err.status = 400;
+      const err = new Error("Truck not found");
+      err.status = 404;
       throw err;
     }
     if (truck.status !== "Disponible") {
@@ -31,7 +50,7 @@ class TripService {
   }
 
   async updateTripStatus(id, driverId, updateData) {
-    const trip = await this.tripRepository.findById(id);
+    const trip = await this.tripRepository.findByIdPopulated(id);
     if (!trip) {
       const err = new Error("Trip Not found");
       err.status = 404;
@@ -63,9 +82,38 @@ class TripService {
       err.status = 400;
       throw err;
     }
-    await this.truckService.updateTruck(trip.truckId, {
+    await this.truckService.updateTruck(trip.truckId._id, {
       currentMileage: data.endMileage,
     });
+
+    // Update Tires Mileage
+    if (this.tireService) {
+      const tires = await this.tireService.getTiresByLocation(trip.truckId._id);
+      for (const tire of tires) {
+        await this.tireService.addMileage(tire._id, distance);
+      }
+    }
+
+    // Check Maintenance Rules
+    if (this.maintenanceRepository && this.alertRepository) {
+      const rules = await this.maintenanceRepository.findAll();
+
+      for (const rule of rules) {
+        const maintenanceInterval = rule.intervalKm;
+        const previousMileage = data.endMileage - distance;
+
+        if (
+          Math.floor(previousMileage / maintenanceInterval) <
+          Math.floor(data.endMileage / maintenanceInterval)
+        ) {
+          await this.alertRepository.create({
+            truckId: trip.truckId._id,
+            type: "Maintenance",
+            message: `Maintenance ${rule.type} required (Interval: ${maintenanceInterval}km).`,
+          });
+        }
+      }
+    }
   }
 
   async generateMissionOrderPdf(id, driverId) {
@@ -82,8 +130,15 @@ class TripService {
       throw err;
     }
 
-    return this.pdfGenerator.generatMissionOrderPdf(trip);
+    return this.pdfGenerator.generateMissionOrder(trip);
   }
 }
 
-export default new TripService(TripRepository, TruckService, PdfGenerator);
+export default new TripService(
+  TripRepository,
+  TruckService,
+  TireService,
+  PdfGenerator,
+  MaintenanceRepository,
+  AlertRepository
+);

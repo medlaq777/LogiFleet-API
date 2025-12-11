@@ -31,6 +31,14 @@ const TripSchema = new mongoose.Schema(
     endMileage: { type: Number },
     fuelVolumeAdded: { type: Number, default: 0 },
     notes: { type: String },
+    tireStatus: [
+      {
+        tireId: { type: mongoose.Schema.Types.ObjectId, ref: "Tire" },
+        status: { type: String },
+        pressure: { type: Number },
+        treadDepth: { type: Number },
+      },
+    ],
   },
   { timestamps: true }
 );

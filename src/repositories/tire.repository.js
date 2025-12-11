@@ -10,6 +10,10 @@ class TireRepository extends VehicleRepository {
     return this.model.findOne({ serialNumber: serialNumber });
   }
 
+  async findByLocation(locationId) {
+    return this.model.find({ locationId: locationId });
+  }
+
   async findInStock() {
     return this.model.find({ locationType: "Stock" });
   }

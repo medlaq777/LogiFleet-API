@@ -16,7 +16,7 @@ class TripRepository extends VehicleRepository {
     return this.model
       .findById(id)
       .populate("driverId", "firstName lastName")
-      .populate("truckId", "licensePlate make model")
+      .populate("truckId", "licensePlate make model currentMileage")
       .populate("trailerId", "licensePlate");
   }
 }

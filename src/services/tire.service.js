@@ -102,5 +102,19 @@ class TireService {
 
     return this.tireRepository.assignTire(id, "Stock", null, null, null);
   }
+
+  async getTiresByLocation(truckId) {
+    return this.tireRepository.findByLocation(truckId);
+  }
+
+  async addMileage(tireId, distance) {
+    const tire = await this.tireRepository.findById(tireId);
+    if (!tire) return;
+
+    const newMileage = (tire.currentMileageOnTire || 0) + distance;
+    return this.tireRepository.update(tireId, {
+      currentMileageOnTire: newMileage,
+    });
+  }
 }
 export default new TireService(TireRepository);

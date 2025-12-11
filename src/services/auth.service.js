@@ -34,8 +34,8 @@ class AuthService {
       password: hashed,
     });
 
-    const token = await JwtUtil.generateToken({
-      id: user.id,
+    const token = JwtUtil.generateToken({
+      _id: user.id,
       fullName: user.firstName + user.lastName,
       email: user.email,
       role: user.role,
@@ -64,7 +64,7 @@ class AuthService {
       throw err;
     }
     const token = JwtUtil.generateToken({
-      id: user.id,
+      _id: user.id,
       fullName: user.firstName + user.lastName,
       email: user.email,
       role: user.role,

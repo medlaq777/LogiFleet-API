@@ -9,6 +9,10 @@ class TruckService {
     return this.truckRepository.findAll();
   }
 
+  async findById(id) {
+    return this.truckRepository.findById(id);
+  }
+
   async createTruck(data) {
     if (!data.licensePlate || !data.make || !data.model) {
       const err = new Error("license plate, make or model are required");

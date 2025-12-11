@@ -14,7 +14,7 @@ class TripRoute {
 
     router.post(
       "/trip",
-      AuthMiddleware.authorizeRole("Driver"),
+      AuthMiddleware.authorizeRole("Admin"),
       TripController.createTrip.bind(TripController)
     );
 
