@@ -13,10 +13,10 @@ app.use(express.json());
 await db.connect();
 
 app.use("/api", AuthRoute.build());
-app.use("/api", TruckRoute.build());
+app.use("/api", TripRoute.build());
 app.use("/api", TrailerRoute.build());
 app.use("/api", TireRoute.build());
-app.use("/api", TripRoute.build());
+app.use("/api", TruckRoute.build());
 
 app.use((err, req, res, next) => {
   console.error("Error on", req.method, req.path);
