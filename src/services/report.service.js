@@ -11,7 +11,6 @@ class ReportService {
 
     const stats = tripStats[0] || { totalDistance: 0, totalFuel: 0, count: 0 };
 
-    // Calculate average consumption (L/100km)
     const avgConsumption =
       stats.totalDistance > 0
         ? (stats.totalFuel / stats.totalDistance) * 100

@@ -17,7 +17,6 @@ const port = Config.PORT;
 app.use(express.json());
 await db.connect();
 
-// Cron Job for Daily Tire Check
 cron.schedule("0 0 * * *", async () => {
   console.log("Running daily tire maintenance check...");
   try {

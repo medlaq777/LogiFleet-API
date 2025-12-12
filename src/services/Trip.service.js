@@ -84,7 +84,6 @@ class TripService {
       currentMileage: data.endMileage,
     });
 
-    // Check Maintenance Rules
     if (this.maintenanceRepository && this.alertRepository) {
       const rules = await this.maintenanceRepository.findAll();
 
