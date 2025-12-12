@@ -17,13 +17,9 @@ class ReportService {
         ? (stats.totalFuel / stats.totalDistance) * 100
         : 0;
 
-    // Estimate Fuel Cost (e.g., 1.5 EUR/L)
-    const fuelCost = stats.totalFuel * 1.5;
-
     return {
       totalKm: stats.totalDistance,
       avgConsumption: Number.parseFloat(avgConsumption.toFixed(2)),
-      fuelCost: Number.parseFloat(fuelCost.toFixed(2)),
       pendingMaintenance: maintenanceStats.pendingMaintenance,
     };
   }

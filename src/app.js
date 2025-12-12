@@ -9,10 +9,24 @@ import TireRoute from "./routes/tire.route.js";
 import TripRoute from "./routes/trip.route.js";
 import MaintenanceRoute from "./routes/maintenance.route.js";
 import ReportRoute from "./routes/report.route.js";
+import cron from "node-cron";
+import MaintenanceService from "./services/maintenance.service.js";
+
 const app = express();
 const port = Config.PORT;
 app.use(express.json());
 await db.connect();
+
+// Cron Job for Daily Tire Check
+cron.schedule("0 0 * * *", async () => {
+  console.log("Running daily tire maintenance check...");
+  try {
+    await MaintenanceService.checkDailyTires();
+    console.log("Daily tire maintenance check completed.");
+  } catch (error) {
+    console.error("Error running daily tire maintenance check:", error);
+  }
+});
 
 app.use("/api", AuthRoute.build());
 app.use("/api", TripRoute.build());

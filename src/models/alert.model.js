@@ -5,19 +5,19 @@ const AlertSchema = new mongoose.Schema(
     truckId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Truck",
-      required: true,
+      required: false,
+    },
+    tireId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tire",
+      required: false,
     },
     type: {
       type: String,
       required: true,
-      enum: ["Maintenance", "Pneus", "Administratif"],
+      enum: ["Maintenance", "Pneus"],
     },
     message: { type: String, required: true },
-    status: {
-      type: String,
-      enum: ["Open", "Resolved", "Ignored"],
-      default: "Open",
-    },
   },
   { timestamps: true }
 );

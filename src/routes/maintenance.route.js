@@ -12,8 +12,12 @@ class MaintenanceRoute {
       "/maintenance/rules",
       MaintenanceController.getRules.bind(MaintenanceController)
     );
+    router.get(
+      "/maintenance/alerts",
+      MaintenanceController.getAlerts.bind(MaintenanceController)
+    );
     router.put(
-      "/maintenance/rules",
+      "/maintenance/rules/:id",
       MaintenanceController.updateRule.bind(MaintenanceController)
     );
 

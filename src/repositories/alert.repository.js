@@ -6,7 +6,11 @@ class AlertRepository {
   }
 
   async findOpenByTruckId(truckId) {
-    return await Alert.find({ truckId, status: "Open" });
+    return await Alert.find({ truckId });
+  }
+
+  async findAll() {
+    return await Alert.find().populate("truckId").populate("tireId");
   }
 }
 

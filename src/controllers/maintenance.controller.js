@@ -14,6 +14,15 @@ class MaintenanceController {
     }
   }
 
+  async getAlerts(req, res, next) {
+    try {
+      const alerts = await this.service.getAlerts();
+      res.status(200).json({ success: true, data: alerts });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async updateRule(req, res, next) {
     try {
       const rule = await this.service.updateRule(req.body);

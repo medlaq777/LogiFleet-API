@@ -10,6 +10,10 @@ class TireRoute {
     router.get("/tires", TireController.getAllTire.bind(TireController));
     router.post("/tires", TireController.createTire.bind(TireController));
     router.put("/tires/:id", TireController.updateTire.bind(TireController));
+    router.get(
+      "/tires/:id/maintenance",
+      TireController.checkMaintenance.bind(TireController)
+    );
     router.delete("/tires/:id", TireController.deleteTire.bind(TireController));
     return router;
   }

@@ -40,6 +40,15 @@ class TireController {
       next(err);
     }
   }
+
+  async checkMaintenance(req, res, next) {
+    try {
+      const status = await this.service.checkMaintenance(req.params.id);
+      res.status(200).json({ success: true, data: status });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default new TireController(TireService);

@@ -56,7 +56,7 @@ class TripService {
       err.status = 404;
       throw err;
     }
-    if (trip.driverId.toString() !== driverId.toString()) {
+    if (trip.driverId._id.toString() !== driverId.toString()) {
       const err = new Error("Cannot access this Trip");
       err.status = 403;
       throw err;
@@ -74,9 +74,7 @@ class TripService {
       err.status = 400;
       throw err;
     }
-
-    const distance =
-      data.endMileage - (data.startMileage || trip.truckId.currentMileage);
+    const distance = data.endMileage - trip.truckId.currentMileage;
     if (distance < 0) {
       const err = new Error("Mileage inconsistency");
       err.status = 400;
@@ -85,14 +83,6 @@ class TripService {
     await this.truckService.updateTruck(trip.truckId._id, {
       currentMileage: data.endMileage,
     });
-
-    // Update Tires Mileage
-    if (this.tireService) {
-      const tires = await this.tireService.getTiresByLocation(trip.truckId._id);
-      for (const tire of tires) {
-        await this.tireService.addMileage(tire._id, distance);
-      }
-    }
 
     // Check Maintenance Rules
     if (this.maintenanceRepository && this.alertRepository) {

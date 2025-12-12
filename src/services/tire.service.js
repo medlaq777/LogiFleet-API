@@ -1,4 +1,5 @@
 import TireRepository from "../repositories/tire.repository.js";
+import MaintenanceRepository from "../repositories/maintenance.repository.js";
 
 class TireService {
   constructor(tireRepository) {
@@ -25,9 +26,6 @@ class TireService {
       err.status = 409;
       throw err;
     }
-    data.locationType = "Stock";
-    data.locationId = null;
-    data.position = "Stock";
     return this.tireRepository.create(data);
   }
 
@@ -38,10 +36,6 @@ class TireService {
       err.status = 404;
       throw err;
     }
-
-    delete data.locationType;
-    delete data.locationId;
-    delete data.position;
 
     return this.tireRepository.update(id, data);
   }
@@ -54,16 +48,10 @@ class TireService {
       throw err;
     }
 
-    if (tire.locationType !== "Stock") {
-      const err = new Error("Cannot remove tire in service");
-      err.status = 400;
-      throw err;
-    }
-
     return this.tireRepository.delete(id);
   }
 
-  async installTire(id, data) {
+  async checkMaintenance(id) {
     const tire = await this.tireRepository.findById(id);
     if (!tire) {
       const err = new Error("Tire Not Found");
@@ -71,50 +59,23 @@ class TireService {
       throw err;
     }
 
-    if (tire.locationType !== "Stock") {
-      const err = new Error("Tire must be in Stock to be installed");
-      err.status = 400;
-      throw err;
+    const rule = await MaintenanceRepository.findByType("Pneus");
+    let status = "Good";
+
+    if (tire.currentMileageOnTire >= tire.expectedLife) {
+      status = "Critical: Expected Life Exceeded";
+    } else if (rule && tire.currentMileageOnTire >= rule.intervalKm) {
+      status = "Maintenance Needed";
     }
 
-    return this.tireRepository.assignTire(
-      id,
-      data.locationType,
-      data.locationId,
-      data.position,
-      data.installedMileage
-    );
-  }
-
-  async removeTire(id) {
-    const tire = await this.tireRepository.findById(id);
-    if (!tire) {
-      const err = new Error("Tire Not Found");
-      err.status = 404;
-      throw err;
-    }
-
-    if (tire.locationType === "Stock") {
-      const err = new Error("Tire is already in Stock");
-      err.status = 400;
-      throw err;
-    }
-
-    return this.tireRepository.assignTire(id, "Stock", null, null, null);
-  }
-
-  async getTiresByLocation(truckId) {
-    return this.tireRepository.findByLocation(truckId);
-  }
-
-  async addMileage(tireId, distance) {
-    const tire = await this.tireRepository.findById(tireId);
-    if (!tire) return;
-
-    const newMileage = (tire.currentMileageOnTire || 0) + distance;
-    return this.tireRepository.update(tireId, {
-      currentMileageOnTire: newMileage,
-    });
+    return {
+      tireId: tire._id,
+      serialNumber: tire.serialNumber,
+      currentMileage: tire.currentMileageOnTire,
+      expectedLife: tire.expectedLife,
+      maintenanceInterval: rule ? rule.intervalKm : "N/A",
+      status: status,
+    };
   }
 }
 export default new TireService(TireRepository);

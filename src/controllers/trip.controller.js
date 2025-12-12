@@ -7,7 +7,7 @@ class TripController {
 
   async createTrip(req, res, next) {
     try {
-      const adminId = req.body.adminId;
+      const adminId = req.user._id;
       const trip = await this.service.createTrip(req.body, adminId);
       res.status(201).json({ success: true, data: trip });
     } catch (err) {
@@ -17,12 +17,6 @@ class TripController {
 
   async getMyTrips(req, res, next) {
     try {
-      console.log(
-        "DEBUG req.user._id:",
-        req.user._id,
-        "Type:",
-        typeof req.user._id
-      );
       const trips = await this.service.getDriverTrips(req.user._id);
       res.status(200).json({ success: true, count: trips.length, data: trips });
     } catch (err) {
