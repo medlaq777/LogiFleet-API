@@ -60,7 +60,6 @@ describe("ReportService", () => {
 
       const result = await reportService.getDashboardStats();
 
-      // (123 / 456) * 100 ≈ 26.973...
       expect(result.totalKm).toBe(456);
       expect(result.avgConsumption).toBe(26.97);
       expect(result.pendingMaintenance).toBe(1);

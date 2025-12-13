@@ -1,188 +1,162 @@
-import truckService from "../../src/services/truck.service.js";
-import TruckRepository from "../../src/repositories/truck.repository.js";
+import trailerService from "../../src/services/trailer.service.js";
+import TrailerRepository from "../../src/repositories/trailer.repository.js";
 
-jest.mock("../../src/repositories/truck.repository.js", () => ({
+jest.mock("../../src/repositories/trailer.repository.js", () => ({
   __esModule: true,
   default: {
     findAll: jest.fn(),
     findById: jest.fn(),
-    findByLicensePlate: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
   },
 }));
 
-describe("TruckService", () => {
+describe("TrailerService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("getAllTrucks", () => {
-    it("returns all trucks", async () => {
-      const trucks = [{ id: "1" }, { id: "2" }];
-      TruckRepository.findAll.mockResolvedValue(trucks);
+  describe("getAllTrailers", () => {
+    it("returns all trailers", async () => {
+      const trailers = [{ id: "1" }, { id: "2" }];
+      TrailerRepository.findAll.mockResolvedValue(trailers);
 
-      const result = await truckService.getAllTrucks();
+      const result = await trailerService.getAllTrailers();
 
-      expect(TruckRepository.findAll).toHaveBeenCalled();
-      expect(result).toBe(trucks);
+      expect(TrailerRepository.findAll).toHaveBeenCalled();
+      expect(result).toBe(trailers);
     });
   });
 
-  describe("findById", () => {
-    it("returns a truck by id", async () => {
-      const truck = { id: "1" };
-      TruckRepository.findById.mockResolvedValue(truck);
-
-      const result = await truckService.findById("1");
-
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(result).toBe(truck);
-    });
-  });
-
-  describe("createTruck", () => {
+  describe("createTrailer", () => {
     it("throws 400 when required fields are missing", async () => {
-      const payload = { licensePlate: "", make: "", model: "" };
-
-      await expect(truckService.createTruck(payload)).rejects.toMatchObject({
-        message: "license plate, make or model are required",
-        status: 400,
-      });
-    });
-
-    it("throws 409 when truck with same license plate exists", async () => {
       const payload = {
-        licensePlate: "ABC123",
-        make: "Volvo",
-        model: "FH",
+        licensePlate: "",
+        make: "",
+        model: "",
+        capacity: null,
       };
 
-      TruckRepository.findByLicensePlate.mockResolvedValue({ id: "1" });
-
-      await expect(truckService.createTruck(payload)).rejects.toMatchObject({
-        message: "Truck with license plate Already existe",
-        status: 409,
-      });
-
-      expect(TruckRepository.findByLicensePlate).toHaveBeenCalledWith("ABC123");
+      await expect(trailerService.createTrailer(payload)).rejects.toMatchObject(
+        {
+          message: "License Plate, make, model and capacity are required",
+          status: 400,
+        }
+      );
     });
 
-    it("creates truck when data is valid and license plate is unique", async () => {
+    it("creates trailer when data is valid", async () => {
       const payload = {
-        licensePlate: "ABC123",
-        make: "Volvo",
-        model: "FH",
+        licensePlate: "TRL123",
+        make: "Schmitz",
+        model: "S.KO",
+        capacity: 25000,
       };
       const created = { id: "1", ...payload };
 
-      TruckRepository.findByLicensePlate.mockResolvedValue(null);
-      TruckRepository.create.mockResolvedValue(created);
+      TrailerRepository.create.mockResolvedValue(created);
 
-      const result = await truckService.createTruck(payload);
+      const result = await trailerService.createTrailer(payload);
 
-      expect(TruckRepository.findByLicensePlate).toHaveBeenCalledWith("ABC123");
-      expect(TruckRepository.create).toHaveBeenCalledWith(payload);
+      expect(TrailerRepository.create).toHaveBeenCalledWith(payload);
       expect(result).toBe(created);
     });
   });
 
-  describe("updateTruck", () => {
-    it("throws 404 when truck not found", async () => {
-      TruckRepository.findById.mockResolvedValue(null);
+  describe("updateTrailer", () => {
+    it("throws 404 when trailer not found", async () => {
+      TrailerRepository.findById.mockResolvedValue(null);
 
       await expect(
-        truckService.updateTruck("1", { status: "En service" })
+        trailerService.updateTrailer("1", { capacity: 30000 })
       ).rejects.toMatchObject({
-        message: "Truk Not Found",
+        message: "Trailer Not Found",
         status: 404,
       });
 
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(TruckRepository.update).not.toHaveBeenCalled();
+      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.update).not.toHaveBeenCalled();
     });
 
-    it("throws 400 when setting status to 'En service' and no driver assigned", async () => {
+    it("throws 400 when modifying capacity of attached trailer", async () => {
       const existing = {
         id: "1",
-        driver: null,
-        status: "Hors service",
+        status: "Attachée",
       };
-      TruckRepository.findById.mockResolvedValue(existing);
+      TrailerRepository.findById.mockResolvedValue(existing);
 
       await expect(
-        truckService.updateTruck("1", { status: "En service" })
+        trailerService.updateTrailer("1", { capacity: 30000 })
       ).rejects.toMatchObject({
-        message: "Cannot update status without driver assigned",
+        message: "Cannot modify attached trailer",
         status: 400,
       });
 
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(TruckRepository.update).not.toHaveBeenCalled();
+      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.update).not.toHaveBeenCalled();
     });
 
-    it("updates truck when valid", async () => {
+    it("updates trailer when valid and not attached or capacity not changed", async () => {
       const existing = {
         id: "1",
-        driver: "driver-id",
-        status: "Hors service",
+        status: "Détachée",
       };
-      const updateData = { status: "En service" };
+      const updateData = { capacity: 30000 };
       const updated = { ...existing, ...updateData };
 
-      TruckRepository.findById.mockResolvedValue(existing);
-      TruckRepository.update.mockResolvedValue(updated);
+      TrailerRepository.findById.mockResolvedValue(existing);
+      TrailerRepository.update.mockResolvedValue(updated);
 
-      const result = await truckService.updateTruck("1", updateData);
+      const result = await trailerService.updateTrailer("1", updateData);
 
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(TruckRepository.update).toHaveBeenCalledWith("1", updateData);
+      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.update).toHaveBeenCalledWith("1", updateData);
       expect(result).toBe(updated);
     });
   });
 
-  describe("deleteTruck", () => {
-    it("throws 404 when truck not found", async () => {
-      TruckRepository.findById.mockResolvedValue(null);
+  describe("deleteTrailer", () => {
+    it("throws 404 when trailer not found", async () => {
+      TrailerRepository.findById.mockResolvedValue(null);
 
-      await expect(truckService.deleteTruck("1")).rejects.toMatchObject({
-        message: "Truk Not Found",
+      await expect(trailerService.deleteTrailer("1")).rejects.toMatchObject({
+        message: "Trailer Not Found",
         status: 404,
       });
 
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(TruckRepository.delete).not.toHaveBeenCalled();
+      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.delete).not.toHaveBeenCalled();
     });
 
-    it("throws 400 when truck is in service", async () => {
+    it("throws 400 when trailer is attached", async () => {
       const existing = {
         id: "1",
-        status: "En service",
+        status: "Attachée",
       };
-      TruckRepository.findById.mockResolvedValue(existing);
+      TrailerRepository.findById.mockResolvedValue(existing);
 
-      await expect(truckService.deleteTruck("1")).rejects.toMatchObject({
-        message: "Cannot delete truck in service",
+      await expect(trailerService.deleteTrailer("1")).rejects.toMatchObject({
+        message: "Cannot remove attached trailer",
         status: 400,
       });
 
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(TruckRepository.delete).not.toHaveBeenCalled();
+      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.delete).not.toHaveBeenCalled();
     });
 
-    it("deletes truck when not in service", async () => {
+    it("deletes trailer when not attached", async () => {
       const existing = {
         id: "1",
-        status: "Hors service",
+        status: "Détachée",
       };
-      TruckRepository.findById.mockResolvedValue(existing);
-      TruckRepository.delete.mockResolvedValue(true);
+      TrailerRepository.findById.mockResolvedValue(existing);
+      TrailerRepository.delete.mockResolvedValue(true);
 
-      const result = await truckService.deleteTruck("1");
+      const result = await trailerService.deleteTrailer("1");
 
-      expect(TruckRepository.findById).toHaveBeenCalledWith("1");
-      expect(TruckRepository.delete).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
+      expect(TrailerRepository.delete).toHaveBeenCalledWith("1");
       expect(result).toBe(true);
     });
   });

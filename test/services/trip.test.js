@@ -261,6 +261,50 @@ describe("TripService", () => {
         status: 400,
       });
     });
+
+    it("updates truck mileage but skips maintenance when repositories are missing", async () => {
+      const trip = {
+        truckId: { _id: "truck1", currentMileage: 1000 },
+      };
+
+      const data = { endMileage: 1500 };
+
+      const originalMaintenanceRepo = tripService.maintenanceRepository;
+      const originalAlertRepo = tripService.alertRepository;
+
+      tripService.maintenanceRepository = null;
+      tripService.alertRepository = null;
+
+      await tripService._finalizeTrip(trip, data);
+
+      expect(TruckService.updateTruck).toHaveBeenCalledWith("truck1", {
+        currentMileage: 1500,
+      });
+      expect(MaintenanceRepository.findAll).not.toHaveBeenCalled();
+      expect(AlertRepository.create).not.toHaveBeenCalled();
+
+      tripService.maintenanceRepository = originalMaintenanceRepo;
+      tripService.alertRepository = originalAlertRepo;
+    });
+
+    it("does not create maintenance alert when interval is not crossed", async () => {
+      const trip = {
+        truckId: { _id: "truck1", currentMileage: 1000 },
+      };
+
+      const data = { endMileage: 1500 };
+
+      MaintenanceRepository.findAll.mockResolvedValue([
+        { type: "Vidange", intervalKm: 1000 },
+      ]);
+
+      await tripService._finalizeTrip(trip, data);
+
+      expect(TruckService.updateTruck).toHaveBeenCalledWith("truck1", {
+        currentMileage: 1500,
+      });
+      expect(AlertRepository.create).not.toHaveBeenCalled();
+    });
   });
 
   describe("generateMissionOrderPdf", () => {

@@ -346,10 +346,89 @@ describe("AuthService", () => {
       expect(sanitized.__v).toBeUndefined();
     });
 
+    it("handles toObject returning null", () => {
+      const doc = {
+        toObject: () => null,
+      };
+      Object.defineProperty(doc, "toObject", { enumerable: false });
+
+      const sanitized = authService.sanitize(doc);
+      expect(sanitized).toEqual({});
+    });
+
     it("returns empty object for invalid input", () => {
       expect(authService.sanitize(null)).toEqual({});
       expect(authService.sanitize(undefined)).toEqual({});
       expect(authService.sanitize("string")).toEqual({});
+    });
+
+    it("returns empty object for object with only password and __v", () => {
+      expect(authService.sanitize({ password: "x", __v: 1 })).toEqual({});
+    });
+
+    it("returns empty object for array input", () => {
+      expect(authService.sanitize([])).toEqual({});
+    });
+
+    it("returns empty object for object with only __v", () => {
+      expect(authService.sanitize({ __v: 1 })).toEqual({});
+    });
+
+    it("returns empty object for object with only password", () => {
+      expect(authService.sanitize({ password: "secret" })).toEqual({});
+    });
+
+    it("returns sanitized object for object with extra fields", () => {
+      const user = {
+        id: "2",
+        firstName: "Jane",
+        lastName: "Smith",
+        email: "jane@example.com",
+        password: "hidden",
+        __v: 0,
+        role: "admin",
+        extra: "shouldStay",
+      };
+      const sanitized = authService.sanitize(user);
+      expect(sanitized).toEqual(
+        expect.objectContaining({
+          id: "2",
+          firstName: "Jane",
+          lastName: "Smith",
+          email: "jane@example.com",
+          role: "admin",
+          extra: "shouldStay",
+        })
+      );
+      expect(sanitized.password).toBeUndefined();
+      expect(sanitized.__v).toBeUndefined();
+    });
+
+    it("does not mutate the original object when sanitizing", () => {
+      const user = {
+        id: "3",
+        firstName: "Alice",
+        lastName: "Brown",
+        email: "alice@example.com",
+        password: "pw",
+        __v: 0,
+        role: "user",
+      };
+      const copy = { ...user };
+      authService.sanitize(user);
+      expect(user).toEqual(copy);
+    });
+
+    it("returns empty object for object with no own properties", () => {
+      expect(authService.sanitize(Object.create(null))).toEqual({});
+    });
+
+    it("returns empty object for object with only inherited properties", () => {
+      function User() {}
+      User.prototype.password = "pw";
+      User.prototype.__v = 1;
+      const user = new User();
+      expect(authService.sanitize(user)).toEqual({});
     });
   });
 });
