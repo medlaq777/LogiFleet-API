@@ -1,8 +1,6 @@
 export default {
   testEnvironment: "node",
-  transform: {
-    "^.+\\.js$": "babel-jest",
-  },
+  transform: {},
   transformIgnorePatterns: ["/node_modules/(?!(uuid)/)"],
   testMatch: ["**/test/**/*.test.js"],
 };
