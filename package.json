@@ -29,7 +29,11 @@
     "pdfkit": "^0.17.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
     "@jest/globals": "^30.2.0",
+    "babel-env": "^2.4.1",
+    "babel-jest": "^30.2.0",
     "jest": "^30.2.0"
   }
 }
