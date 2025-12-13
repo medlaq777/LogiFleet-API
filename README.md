@@ -64,7 +64,7 @@ To run this project, you will need to add the following environment variables to
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/your-username/logifleet-backend.git
+    git clone https://github.com/medlaq777/LogiFleet-API
     cd logifleet-backend
     ```
 
@@ -81,10 +81,6 @@ To run this project, you will need to add the following environment variables to
 4. **Run the server**
 
     ```bash
-    # Development mode
-    npm run dev
-
-    # Production mode
     npm start
     ```
 
@@ -122,7 +118,7 @@ npm test -- --coverage
 
 We use SonarQube to ensure code quality, security, and test coverage.
 
-![SonarQube Dashboard](https://github.com/user-attachments/assets/sonarqube-screenshot.png)
+![SonarQube Dashboard](https://github.com/medlaq777/LogiFleet-API/blob/main/image.png)
 
 ### Prerequisites
 
