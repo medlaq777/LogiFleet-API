@@ -6,8 +6,8 @@ class TireService {
     this.tireRepository = tireRepository;
   }
 
-  async getAllTire() {
-    return this.tireRepository.findAll();
+  async getAllTire(page, limit) {
+    return this.tireRepository.findAll(page, limit);
   }
 
   async createTire(data) {

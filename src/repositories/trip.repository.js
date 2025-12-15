@@ -5,6 +5,19 @@ class TripRepository extends VehicleRepository {
   constructor() {
     super(Trip);
   }
+
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    return this.model
+      .find()
+      .populate("driverId", "firstName lastName")
+      .populate("truckId", "licensePlate make model")
+      .populate("trailerId", "licensePlate")
+      .sort({ startDate: -1 })
+      .skip(skip)
+      .limit(limit);
+  }
+  
   async findByDriverId(driverId) {
     return this.model
       .find({ driverId })

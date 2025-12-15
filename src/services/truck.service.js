@@ -5,8 +5,8 @@ class TruckService {
     this.truckRepository = truckRepository;
   }
 
-  async getAllTrucks() {
-    return this.truckRepository.findAll();
+  async getAllTrucks(page, limit) {
+    return this.truckRepository.findAll(page, limit);
   }
 
   async findById(id) {

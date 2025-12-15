@@ -22,8 +22,8 @@ class TripService {
     this.alertRepository = alertRepository;
   }
 
-  async getAllTrips() {
-    return this.tripRepository.findAll();
+  async getAllTrips(page, limit) {
+    return this.tripRepository.findAll(page, limit);
   }
 
   async createTrip(data, adminId) {

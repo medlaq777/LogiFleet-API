@@ -6,6 +6,13 @@ class TripRoute {
   static build() {
     const router = express.Router();
     router.use(AuthMiddleware.protect);
+
+    router.get(
+      "/trips",
+      AuthMiddleware.authorizeRole("Admin"),
+      TripController.getAllTrips.bind(TripController)
+    );
+
     router.get(
       "/trip",
       AuthMiddleware.authorizeRole("Driver"),

@@ -5,6 +5,17 @@ class TripController {
     this.service = service;
   }
 
+  async getAllTrips(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit);
+      const trips = await this.service.getAllTrips(page, limit);
+      res.status(200).json({ succes: true, count: trips.length, data: trips });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async createTrip(req, res, next) {
     try {
       const adminId = req.user._id;

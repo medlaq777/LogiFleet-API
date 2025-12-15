@@ -14,7 +14,9 @@ class TruckController {
   }
   async getAllTrucks(req, res, next) {
     try {
-      const trucks = await this.service.getAllTrucks();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const trucks = await this.service.getAllTrucks(page, limit);
       res
         .status(200)
         .json({ success: true, count: trucks.length, data: trucks });

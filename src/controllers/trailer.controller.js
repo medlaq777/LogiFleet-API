@@ -16,7 +16,9 @@ class TrailerController {
 
   async getAllTrailers(req, res, next) {
     try {
-      const trailers = await this.service.getAllTrailers();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const trailers = await this.service.getAllTrailers(page, limit);
       res
         .status(200)
         .json({ success: true, count: trailers.length, data: trailers });

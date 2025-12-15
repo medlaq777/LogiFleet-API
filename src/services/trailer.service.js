@@ -4,8 +4,8 @@ class TrailerService {
     this.trailerRepository = trailerRepository;
   }
 
-  async getAllTrailers() {
-    return this.trailerRepository.findAll();
+  async getAllTrailers(page, limit) {
+    return this.trailerRepository.findAll(page, limit);
   }
 
   async createTrailer(data) {
