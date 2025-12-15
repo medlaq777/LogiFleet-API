@@ -22,6 +22,10 @@ class TripService {
     this.alertRepository = alertRepository;
   }
 
+  async getAllTrips() {
+    return this.tripRepository.findAll();
+  }
+
   async createTrip(data, adminId) {
     if (!data.truckId) {
       const err = new Error("Truck ID is required");

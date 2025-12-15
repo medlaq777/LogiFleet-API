@@ -3,8 +3,9 @@ class VehicleRepository {
     this.model = model;
   }
 
-  async findAll() {
-    return this.model.find();
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    return this.model.find().skip(skip).limit(limit);
   }
 
   async findById(id) {
