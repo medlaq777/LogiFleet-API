@@ -27,8 +27,14 @@ class TripRoute {
 
     router.put(
       "/trip/:id",
-      AuthMiddleware.authorizeRole("Driver"),
+      AuthMiddleware.authorizeRole("Admin", "Driver"),
       TripController.updateTrip.bind(TripController)
+    );
+
+    router.delete(
+      "/trip/:id",
+      AuthMiddleware.authorizeRole("Admin"),
+      TripController.deleteTrip.bind(TripController)
     );
 
     router.get(

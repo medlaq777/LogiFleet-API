@@ -6,7 +6,7 @@ const TireSchema = new mongoose.Schema(
     brand: { type: String, required: true },
     type: { type: String, required: true },
     currentMileageOnTire: { type: Number, default: 0, min: 0 },
-    expectedLife: { type: Number, required: true, min: 1, max: 1000 },
+    expectedLife: { type: Number, required: true, min: 1, max: 100000 },
   },
   { timestamps: true }
 );

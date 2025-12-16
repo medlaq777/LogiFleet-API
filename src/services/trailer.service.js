@@ -26,12 +26,6 @@ class TrailerService {
       err.status = 404;
       throw err;
     }
-
-    if (data.capacity && trailer.status === "Attachée") {
-      const err = new Error("Cannot modify attached trailer");
-      err.status = 400;
-      throw err;
-    }
     return this.trailerRepository.update(id, data);
   }
 
@@ -40,12 +34,6 @@ class TrailerService {
     if (!trailer) {
       const err = new Error("Trailer Not Found");
       err.status = 404;
-      throw err;
-    }
-
-    if (trailer.status === "Attachée") {
-      const err = new Error("Cannot remove attached trailer");
-      err.status = 400;
       throw err;
     }
     return this.trailerRepository.delete(id);

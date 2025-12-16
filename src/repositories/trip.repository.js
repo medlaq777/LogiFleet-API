@@ -10,14 +10,14 @@ class TripRepository extends VehicleRepository {
     const skip = (page - 1) * limit;
     return this.model
       .find()
-      .populate("driverId", "firstName lastName")
+      .populate("driverId", "firstName lastName email")
       .populate("truckId", "licensePlate make model")
       .populate("trailerId", "licensePlate")
       .sort({ startDate: -1 })
       .skip(skip)
       .limit(limit);
   }
-  
+
   async findByDriverId(driverId) {
     return this.model
       .find({ driverId })
@@ -25,10 +25,11 @@ class TripRepository extends VehicleRepository {
       .populate("trailerId", "licensePlate")
       .sort({ startDate: -1 });
   }
+
   async findByIdPopulated(id) {
     return this.model
       .findById(id)
-      .populate("driverId", "firstName lastName")
+      .populate("driverId", "firstName lastName email")
       .populate("truckId", "licensePlate make model currentMileage")
       .populate("trailerId", "licensePlate");
   }

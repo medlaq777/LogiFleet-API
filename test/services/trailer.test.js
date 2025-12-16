@@ -86,10 +86,8 @@ describe("TrailerService", () => {
       };
       TrailerRepository.findById.mockResolvedValue(existing);
 
-      await expect(
-        trailerService.updateTrailer("1", { capacity: 30000 })
-      ).rejects.toMatchObject({
-        message: "Cannot modify attached trailer",
+      await expect(trailerService.updateTrailer("1", { capacity: 30000 })).rejects.toMatchObject({
+        message: "Cannot modify capacity of attached trailer",
         status: 400,
       });
 

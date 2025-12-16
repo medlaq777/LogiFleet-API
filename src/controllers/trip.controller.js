@@ -37,12 +37,31 @@ class TripController {
 
   async updateTrip(req, res, next) {
     try {
-      const updatedTrip = await this.service.updateTripStatus(
-        req.params.id,
-        req.user._id,
-        req.body
-      );
+      const isAdmin = req.user.role === 'Admin';
+      let updatedTrip;
+
+      if (isAdmin) {
+        // Admin can update any trip
+        updatedTrip = await this.service.updateTrip(req.params.id, req.body);
+      } else {
+        // Driver can only update their own trip status
+        updatedTrip = await this.service.updateTripStatus(
+          req.params.id,
+          req.user._id,
+          req.body
+        );
+      }
+
       res.status(200).json({ success: true, data: updatedTrip });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async deleteTrip(req, res, next) {
+    try {
+      await this.service.deleteTrip(req.params.id);
+      res.status(200).json({ success: true, message: 'Trip deleted successfully' });
     } catch (err) {
       next(err);
     }

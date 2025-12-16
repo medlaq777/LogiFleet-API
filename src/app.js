@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import Config from "./config/config.js";
 import db from "./config/db.js";
 import AuthRoute from "./routes/auth.route.js";
@@ -7,6 +8,7 @@ import TruckRoute from "./routes/truck.route.js";
 import TrailerRoute from "./routes/trailer.route.js";
 import TireRoute from "./routes/tire.route.js";
 import TripRoute from "./routes/trip.route.js";
+import UserRoute from "./routes/user.route.js";
 import MaintenanceRoute from "./routes/maintenance.route.js";
 import ReportRoute from "./routes/report.route.js";
 import CronConfig from "./config/cron.js";
@@ -14,12 +16,20 @@ import CronConfig from "./config/cron.js";
 const app = express();
 app.disable("x-powered-by");
 const port = Config.PORT;
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 await db.connect();
 
 CronConfig.registerDailyTireMaintenanceJob();
 
 app.use("/api", AuthRoute.build());
+app.use("/api", UserRoute.build());
 app.use("/api", TripRoute.build());
 app.use("/api", TrailerRoute.build());
 app.use("/api", TireRoute.build());

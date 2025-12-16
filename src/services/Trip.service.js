@@ -53,6 +53,26 @@ class TripService {
     return this.tripRepository.findByDriverId(driverId);
   }
 
+  async updateTrip(id, updateData) {
+    const trip = await this.tripRepository.findById(id);
+    if (!trip) {
+      const err = new Error("Trip not found");
+      err.status = 404;
+      throw err;
+    }
+    return this.tripRepository.update(id, updateData);
+  }
+
+  async deleteTrip(id) {
+    const trip = await this.tripRepository.findById(id);
+    if (!trip) {
+      const err = new Error("Trip not found");
+      err.status = 404;
+      throw err;
+    }
+    return this.tripRepository.delete(id);
+  }
+
   async updateTripStatus(id, driverId, updateData) {
     const trip = await this.tripRepository.findByIdPopulated(id);
     if (!trip) {
