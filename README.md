@@ -164,18 +164,22 @@ We use SonarQube to ensure code quality, security, and test coverage.
 
 ### Trailers
 
-- `GET /api/trailers` - Get all trailers.
+- `GET /api/trailers` - Get all trailers (Admin).
 - `POST /api/trailers` - Create a trailer.
 - `PUT /api/trailers/:id` - Update trailer.
+- `DELETE /api/trailers/:id` - Delete a trailer.
 
 ### Tires
 
-- `GET /api/tires` - Get all tires.
+- `GET /api/tires` - Get all tires (Admin).
 - `POST /api/tires` - Register a new tire.
+- `PUT /api/tires/:id` - Update tire details.
+- `DELETE /api/tires/:id` - Delete a tire.
 - `GET /api/tires/:id/maintenance` - Check maintenance status for a specific tire.
 
 ### Trips
 
+- `GET /api/trips` - Get ALL trips (Admin).
 - `GET /api/trip` - Get trips assigned to the logged-in driver.
 - `POST /api/trip` - Create a new trip (Admin).
 - `PUT /api/trip/:id` - Update trip status (Driver).
@@ -185,3 +189,4 @@ We use SonarQube to ensure code quality, security, and test coverage.
 
 - `GET /api/maintenance/rules` - View maintenance rules.
 - `GET /api/maintenance/alerts` - View active alerts.
+- `GET /api/dashboard` - Get dashboard statistics (Total KM, Fuel, Maintenance).
