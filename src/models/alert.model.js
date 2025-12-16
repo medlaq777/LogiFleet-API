@@ -15,9 +15,15 @@ const AlertSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ["Maintenance", "Pneus"],
+      enum: ["Maintenance", "Pneus", "Oil", "Inspection"],
     },
     message: { type: String, required: true },
+    cost: { type: Number, default: 0 },
+    status: {
+      type: String,
+      enum: ["Open", "Resolved"],
+      default: "Open",
+    },
   },
   { timestamps: true }
 );

@@ -9,8 +9,8 @@ class TripController {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit);
-      const trips = await this.service.getAllTrips(page, limit);
-      res.status(200).json({ succes: true, count: trips.length, data: trips });
+      const { items, total } = await this.service.getAllTrips(page, limit);
+      res.status(200).json({ succes: true, count: total, data: items });
     } catch (err) {
       next(err);
     }

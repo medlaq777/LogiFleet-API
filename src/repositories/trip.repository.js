@@ -6,9 +6,9 @@ class TripRepository extends VehicleRepository {
     super(Trip);
   }
 
-  async findAll(page = 1, limit = 10) {
+  async findAll(page = 1, limit = 5) {
     const skip = (page - 1) * limit;
-    return this.model
+    const items = await this.model
       .find()
       .populate("driverId", "firstName lastName email")
       .populate("truckId", "licensePlate make model")
@@ -16,6 +16,9 @@ class TripRepository extends VehicleRepository {
       .sort({ startDate: -1 })
       .skip(skip)
       .limit(limit);
+
+    const total = await this.model.countDocuments();
+    return { items, total };
   }
 
   async findByDriverId(driverId) {

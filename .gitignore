@@ -4,3 +4,4 @@ node_modules
 coverage
 .babelrc
 sonar-project.properties
+seed.js

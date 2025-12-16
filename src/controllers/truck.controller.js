@@ -16,10 +16,10 @@ class TruckController {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const trucks = await this.service.getAllTrucks(page, limit);
+      const { items, total } = await this.service.getAllTrucks(page, limit);
       res
         .status(200)
-        .json({ success: true, count: trucks.length, data: trucks });
+        .json({ success: true, count: total, data: items });
     } catch (err) {
       next(err);
     }

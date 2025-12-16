@@ -17,6 +17,10 @@ class MaintenanceRoute {
       MaintenanceController.getAlerts.bind(MaintenanceController)
     );
     router.put(
+      "/maintenance/alerts/:id",
+      MaintenanceController.updateAlert.bind(MaintenanceController)
+    );
+    router.put(
       "/maintenance/rules/:id",
       MaintenanceController.updateRule.bind(MaintenanceController)
     );

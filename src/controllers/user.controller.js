@@ -11,14 +11,14 @@ class UserController {
             const limit = parseInt(req.query.limit) || 100;
             const role = req.query.role;
 
-            let users;
+            let result;
             if (role) {
-                users = await this.service.getUsersByRole(role, page, limit);
+                result = await this.service.getUsersByRole(role, page, limit);
             } else {
-                users = await this.service.getAllUsers(page, limit);
+                result = await this.service.getAllUsers(page, limit);
             }
 
-            res.status(200).json({ success: true, count: users.length, data: users });
+            res.status(200).json({ success: true, count: result.total, data: result.items });
         } catch (err) {
             next(err);
         }

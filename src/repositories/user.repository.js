@@ -14,12 +14,14 @@ class UserRepository {
     return userModel.findById(id).exec();
   }
 
-  async findAll(page = 1, limit = 100) {
+  async findAll(page = 1, limit = 5) {
     const skip = (page - 1) * limit;
-    return userModel.find().skip(skip).limit(limit).exec();
+    const items = await userModel.find().skip(skip).limit(limit).exec();
+    const total = await userModel.countDocuments().exec();
+    return { items, total };
   }
 
-  async findByRole(role, page = 1, limit = 100) {
+  async findByRole(role, page = 1, limit = 5) {
     const skip = (page - 1) * limit;
     return userModel.find({ role }).skip(skip).limit(limit).exec();
   }

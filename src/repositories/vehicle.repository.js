@@ -3,9 +3,11 @@ class VehicleRepository {
     this.model = model;
   }
 
-  async findAll(page = 1, limit = 10) {
+  async findAll(page = 1, limit = 5) {
     const skip = (page - 1) * limit;
-    return this.model.find().skip(skip).limit(limit);
+    const items = await this.model.find().skip(skip).limit(limit);
+    const total = await this.model.countDocuments();
+    return { items, total };
   }
 
   async findById(id) {

@@ -1,8 +1,11 @@
 import MaintenanceRule from "../models/maintenanceRule.model.js";
 
 class MaintenanceRepository {
-  async findAll() {
-    return await MaintenanceRule.find();
+  async findAll(page = 1, limit = 5) {
+    const skip = (page - 1) * limit;
+    const items = await MaintenanceRule.find().skip(skip).limit(limit);
+    const total = await MaintenanceRule.countDocuments();
+    return { items, total };
   }
 
   async findByType(type) {

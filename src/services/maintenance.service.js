@@ -9,12 +9,16 @@ class MaintenanceService {
     this.tireRepository = tireRepository;
   }
 
-  async getRules() {
-    return await this.repository.findAll();
+  async getRules(page, limit) {
+    return await this.repository.findAll(page, limit);
   }
 
-  async getAlerts() {
-    return await this.alertRepository.findAll();
+  async getAlerts(page, limit) {
+    return await this.alertRepository.findAll(page, limit);
+  }
+
+  async updateAlert(id, data) {
+    return await this.alertRepository.update(id, data);
   }
 
   async updateRule(data) {
