@@ -7,8 +7,8 @@ class UserController {
 
     async getAllUsers(req, res, next) {
         try {
-            const page = parseInt(req.query.page) || 1;
-            const limit = parseInt(req.query.limit) || 100;
+            const page = Number.parseInt(req.query.page) || 1;
+            const limit = Number.parseInt(req.query.limit) || 100;
             const role = req.query.role;
 
             let result;
@@ -28,6 +28,33 @@ class UserController {
         try {
             const user = await this.service.getUserById(req.params.id);
             res.status(200).json({ success: true, data: user });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async createUser(req, res, next) {
+        try {
+            const user = await this.service.createUser(req.body);
+            res.status(201).json({ success: true, data: user });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async updateUser(req, res, next) {
+        try {
+            const user = await this.service.updateUser(req.params.id, req.body);
+            res.status(200).json({ success: true, data: user });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async deleteUser(req, res, next) {
+        try {
+            const result = await this.service.deleteUser(req.params.id);
+            res.status(200).json({ success: true, message: result.message });
         } catch (err) {
             next(err);
         }

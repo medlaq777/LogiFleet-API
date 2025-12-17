@@ -16,8 +16,8 @@ class TireController {
 
   async getAllTire(req, res, next) {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
+      const page = Number.parseInt(req.query.page) || 1;
+      const limit = Number.parseInt(req.query.limit) || 10;
       const { items, total } = await this.service.getAllTire(page, limit);
       res.status(200).json({ success: true, count: total, data: items });
     } catch (err) {

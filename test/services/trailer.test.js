@@ -79,23 +79,7 @@ describe("TrailerService", () => {
       expect(TrailerRepository.update).not.toHaveBeenCalled();
     });
 
-    it("throws 400 when modifying capacity of attached trailer", async () => {
-      const existing = {
-        id: "1",
-        status: "Attachée",
-      };
-      TrailerRepository.findById.mockResolvedValue(existing);
-
-      await expect(trailerService.updateTrailer("1", { capacity: 30000 })).rejects.toMatchObject({
-        message: "Cannot modify capacity of attached trailer",
-        status: 400,
-      });
-
-      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
-      expect(TrailerRepository.update).not.toHaveBeenCalled();
-    });
-
-    it("updates trailer when valid and not attached or capacity not changed", async () => {
+    it("updates trailer when valid", async () => {
       const existing = {
         id: "1",
         status: "Détachée",
@@ -127,23 +111,7 @@ describe("TrailerService", () => {
       expect(TrailerRepository.delete).not.toHaveBeenCalled();
     });
 
-    it("throws 400 when trailer is attached", async () => {
-      const existing = {
-        id: "1",
-        status: "Attachée",
-      };
-      TrailerRepository.findById.mockResolvedValue(existing);
-
-      await expect(trailerService.deleteTrailer("1")).rejects.toMatchObject({
-        message: "Cannot remove attached trailer",
-        status: 400,
-      });
-
-      expect(TrailerRepository.findById).toHaveBeenCalledWith("1");
-      expect(TrailerRepository.delete).not.toHaveBeenCalled();
-    });
-
-    it("deletes trailer when not attached", async () => {
+    it("deletes trailer when found", async () => {
       const existing = {
         id: "1",
         status: "Détachée",

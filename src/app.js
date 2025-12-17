@@ -18,7 +18,7 @@ app.disable("x-powered-by");
 const port = Config.PORT;
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

@@ -17,7 +17,7 @@ class AuthMiddleware {
     }
   }
 
-  static authorizeRole(role) {
+  static authorizeRole(...roles) {
     return (req, res, next) => {
       try {
         if (!req.user) {
@@ -25,7 +25,10 @@ class AuthMiddleware {
           err.status = 401;
           throw err;
         }
-        if (req.user.role !== role) {
+        const userRole = req.user.role?.toLowerCase() || "";
+        const allowedRoles = roles.map(r => r.toLowerCase());
+
+        if (!allowedRoles.includes(userRole)) {
           const err = new Error("Forbidden");
           err.status = 403;
           throw err;

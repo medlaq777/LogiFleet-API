@@ -24,6 +24,7 @@ class TripRepository extends VehicleRepository {
   async findByDriverId(driverId) {
     return this.model
       .find({ driverId })
+      .populate("driverId", "firstName lastName email")
       .populate("truckId", "licensePlate make model")
       .populate("trailerId", "licensePlate")
       .sort({ startDate: -1 });

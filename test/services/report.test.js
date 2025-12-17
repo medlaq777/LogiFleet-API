@@ -6,6 +6,9 @@ jest.mock("../../src/repositories/report.repository.js", () => ({
   default: {
     getTripStats: jest.fn(),
     getMaintenanceStats: jest.fn(),
+    getCounts: jest.fn(),
+    getFuelStats: jest.fn(),
+    getMaintenanceCostStats: jest.fn(),
   },
 }));
 
@@ -22,16 +25,35 @@ describe("ReportService", () => {
       ReportRepository.getMaintenanceStats.mockResolvedValue({
         pendingMaintenance: 3,
       });
+      ReportRepository.getCounts.mockResolvedValue({
+        users: 10,
+        trucks: 5,
+        trips: 20
+      });
+      ReportRepository.getFuelStats.mockResolvedValue([
+        { _id: { month: 1 }, totalFuel: 100 }
+      ]);
+      ReportRepository.getMaintenanceCostStats.mockResolvedValue([
+        { _id: "Pneus", totalCost: 500 }
+      ]);
 
       const result = await reportService.getDashboardStats();
 
       expect(ReportRepository.getTripStats).toHaveBeenCalled();
       expect(ReportRepository.getMaintenanceStats).toHaveBeenCalled();
+      expect(ReportRepository.getCounts).toHaveBeenCalled();
+      expect(ReportRepository.getFuelStats).toHaveBeenCalled();
+      expect(ReportRepository.getMaintenanceCostStats).toHaveBeenCalled();
 
       expect(result).toEqual({
         totalKm: 1000,
         avgConsumption: 20, // (200 / 1000) * 100
         pendingMaintenance: 3,
+        users: 10,
+        trucks: 5,
+        trips: 20,
+        fuelChart: { labels: ["Jan"], data: [100] },
+        maintenanceChart: { labels: ["Tires"], data: [500] }
       });
     });
 
@@ -40,6 +62,13 @@ describe("ReportService", () => {
       ReportRepository.getMaintenanceStats.mockResolvedValue({
         pendingMaintenance: 0,
       });
+      ReportRepository.getCounts.mockResolvedValue({
+        users: 0,
+        trucks: 0,
+        trips: 0
+      });
+      ReportRepository.getFuelStats.mockResolvedValue([]);
+      ReportRepository.getMaintenanceCostStats.mockResolvedValue([]);
 
       const result = await reportService.getDashboardStats();
 
@@ -47,6 +76,11 @@ describe("ReportService", () => {
         totalKm: 0,
         avgConsumption: 0,
         pendingMaintenance: 0,
+        users: 0,
+        trucks: 0,
+        trips: 0,
+        fuelChart: { labels: [], data: [] },
+        maintenanceChart: { labels: [], data: [] }
       });
     });
 
@@ -57,12 +91,31 @@ describe("ReportService", () => {
       ReportRepository.getMaintenanceStats.mockResolvedValue({
         pendingMaintenance: 1,
       });
+      ReportRepository.getCounts.mockResolvedValue({});
+      ReportRepository.getFuelStats.mockResolvedValue([]);
+      ReportRepository.getMaintenanceCostStats.mockResolvedValue([]);
 
       const result = await reportService.getDashboardStats();
 
       expect(result.totalKm).toBe(456);
       expect(result.avgConsumption).toBe(26.97);
       expect(result.pendingMaintenance).toBe(1);
+    });
+    it("handles unknown maintenance types", async () => {
+      ReportRepository.getTripStats.mockResolvedValue([]);
+      ReportRepository.getMaintenanceStats.mockResolvedValue({});
+      ReportRepository.getCounts.mockResolvedValue({});
+      ReportRepository.getFuelStats.mockResolvedValue([]);
+
+      ReportRepository.getMaintenanceCostStats.mockResolvedValue([
+        { _id: "UnknownType", totalCost: 100 }
+      ]);
+
+      const result = await reportService.getDashboardStats();
+
+      // Should use s._id ("UnknownType") as label since mapping doesn't exist
+      expect(result.maintenanceChart.labels).toContain("UnknownType");
+      expect(result.maintenanceChart.data).toContain(100);
     });
   });
 });

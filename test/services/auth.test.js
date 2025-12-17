@@ -9,6 +9,7 @@ jest.mock("../../src/repositories/user.repository", () => ({
     findByEmail: jest.fn(),
     create: jest.fn(),
     findById: jest.fn(),
+    update: jest.fn(),
   },
 }));
 
@@ -291,6 +292,71 @@ describe("AuthService", () => {
     });
   });
 
+  describe("updateProfile", () => {
+    it("updates profile ignoring role and not hashing password if not provided", async () => {
+      const updateData = { firstName: "Jane", role: "admin" }; // role should be ignored
+      const updatedUser = {
+        id: "123",
+        firstName: "Jane",
+        lastName: "Doe",
+        email: "test@example.com",
+        role: "user",
+        password: "hashed",
+        __v: 0,
+        toObject: function () { return this; }
+      };
+
+      userRepository.update.mockResolvedValue(updatedUser);
+
+      const result = await authService.updateProfile("123", updateData);
+
+      // Condition check: role is stripped, password not hashed
+      expect(userRepository.update).toHaveBeenCalledWith("123", { firstName: "Jane" });
+      expect(BcryptUtil.hash).not.toHaveBeenCalled();
+
+      expect(result.firstName).toBe("Jane");
+      expect(result.role).toBe("user");
+      expect(result.password).toBeUndefined();
+    });
+
+    it("hashes password if provided", async () => {
+      const updateData = { password: "newPassword" };
+      BcryptUtil.hash.mockResolvedValue("newHashed");
+      const updatedUser = {
+        id: "123",
+        password: "newHashed",
+        toObject: function () { return this; }
+      };
+
+      userRepository.update.mockResolvedValue(updatedUser);
+
+      await authService.updateProfile("123", updateData);
+
+      // Condition check: password hashing occurred
+      expect(BcryptUtil.hash).toHaveBeenCalledWith("newPassword", 10);
+      expect(userRepository.update).toHaveBeenCalledWith("123", { password: "newHashed" });
+    });
+
+    it("does not update anything if only role is provided", async () => {
+      const updateData = { role: "admin" };
+      const updatedUser = { id: "123", role: "user" };
+      userRepository.update.mockResolvedValue(updatedUser);
+
+      await authService.updateProfile("123", updateData);
+
+      // Condition check: update called with empty object
+      expect(userRepository.update).toHaveBeenCalledWith("123", {});
+    });
+
+    it("throws 404 if user not found", async () => {
+      userRepository.update.mockResolvedValue(null);
+      await expect(authService.updateProfile("123", { firstName: "Jane" })).rejects.toMatchObject({
+        message: "User Not Found",
+        status: 404
+      });
+    });
+  });
+
   describe("sanitize", () => {
     it("removes password and __v from plain object", () => {
       const user = {
@@ -424,7 +490,7 @@ describe("AuthService", () => {
     });
 
     it("returns empty object for object with only inherited properties", () => {
-      function User() {}
+      function User() { }
       User.prototype.password = "pw";
       User.prototype.__v = 1;
       const user = new User();

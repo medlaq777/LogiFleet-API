@@ -7,8 +7,8 @@ class MaintenanceController {
 
   async getRules(req, res, next) {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
+      const page = Number.parseInt(req.query.page) || 1;
+      const limit = Number.parseInt(req.query.limit) || 10;
       const { items, total } = await this.service.getRules(page, limit);
       res.status(200).json({ success: true, count: total, data: items });
     } catch (err) {
@@ -18,8 +18,8 @@ class MaintenanceController {
 
   async getAlerts(req, res, next) {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
+      const page = Number.parseInt(req.query.page) || 1;
+      const limit = Number.parseInt(req.query.limit) || 10;
       const { items, total } = await this.service.getAlerts(page, limit);
       res.status(200).json({ success: true, count: total, data: items });
     } catch (err) {

@@ -6,15 +6,16 @@ class TireRoute {
   static build() {
     const router = express.Router();
     router.use(AuthMiddleware.protect);
-    router.use(AuthMiddleware.authorizeRole("Admin"));
-    router.get("/tires", TireController.getAllTire.bind(TireController));
-    router.post("/tires", TireController.createTire.bind(TireController));
-    router.put("/tires/:id", TireController.updateTire.bind(TireController));
+
+    router.get("/tires", AuthMiddleware.authorizeRole("Admin"), TireController.getAllTire.bind(TireController));
+    router.post("/tires", AuthMiddleware.authorizeRole("Admin"), TireController.createTire.bind(TireController));
+    router.put("/tires/:id", AuthMiddleware.authorizeRole("Admin"), TireController.updateTire.bind(TireController));
     router.get(
       "/tires/:id/maintenance",
+      AuthMiddleware.authorizeRole("Admin"),
       TireController.checkMaintenance.bind(TireController)
     );
-    router.delete("/tires/:id", TireController.deleteTire.bind(TireController));
+    router.delete("/tires/:id", AuthMiddleware.authorizeRole("Admin"), TireController.deleteTire.bind(TireController));
     return router;
   }
 }

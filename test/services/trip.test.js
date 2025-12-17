@@ -9,9 +9,12 @@ jest.mock("../../src/repositories/trip.repository.js", () => ({
   __esModule: true,
   default: {
     create: jest.fn(),
+    findAll: jest.fn(),
     findByDriverId: jest.fn(),
     findByIdPopulated: jest.fn(),
+    findById: jest.fn(),
     update: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -52,6 +55,18 @@ jest.mock("../../src/repositories/alert.repository.js", () => ({
 describe("TripService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe("getAllTrips", () => {
+    it("returns all trips", async () => {
+      const trips = [{ id: "t1" }, { id: "t2" }];
+      TripRepository.findAll.mockResolvedValue(trips);
+
+      const result = await tripService.getAllTrips();
+
+      expect(TripRepository.findAll).toHaveBeenCalled();
+      expect(result).toBe(trips);
+    });
   });
 
   describe("createTrip", () => {
@@ -136,6 +151,49 @@ describe("TripService", () => {
 
       expect(TripRepository.findByDriverId).toHaveBeenCalledWith("driver1");
       expect(result).toBe(trips);
+    });
+  });
+
+  describe("updateTrip", () => {
+    it("throws 404 when trip not found", async () => {
+      TripRepository.findById.mockResolvedValue(null);
+      await expect(tripService.updateTrip("trip1", {})).rejects.toMatchObject({
+        message: "Trip not found",
+        status: 404
+      });
+    });
+
+    it("updates trip when found", async () => {
+      const trip = { id: "trip1" };
+      const updateData = { destination: "New City" };
+      const updatedTrip = { ...trip, ...updateData };
+
+      TripRepository.findById.mockResolvedValue(trip);
+      TripRepository.update.mockResolvedValue(updatedTrip);
+
+      const result = await tripService.updateTrip("trip1", updateData);
+      expect(TripRepository.update).toHaveBeenCalledWith("trip1", updateData);
+      expect(result).toBe(updatedTrip);
+    });
+  });
+
+  describe("deleteTrip", () => {
+    it("throws 404 when trip not found", async () => {
+      TripRepository.findById.mockResolvedValue(null);
+      await expect(tripService.deleteTrip("trip1")).rejects.toMatchObject({
+        message: "Trip not found",
+        status: 404
+      });
+    });
+
+    it("deletes trip when found", async () => {
+      const trip = { id: "trip1" };
+      TripRepository.findById.mockResolvedValue(trip);
+      TripRepository.delete.mockResolvedValue(true);
+
+      const result = await tripService.deleteTrip("trip1");
+      expect(TripRepository.delete).toHaveBeenCalledWith("trip1");
+      expect(result).toBe(true);
     });
   });
 

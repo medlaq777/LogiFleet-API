@@ -7,8 +7,8 @@ class TripController {
 
   async getAllTrips(req, res, next) {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit);
+      const page = Number.parseInt(req.query.page) || 1;
+      const limit = Number.parseInt(req.query.limit);
       const { items, total } = await this.service.getAllTrips(page, limit);
       res.status(200).json({ succes: true, count: total, data: items });
     } catch (err) {

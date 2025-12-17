@@ -8,15 +8,21 @@ class TripRoute {
     router.use(AuthMiddleware.protect);
 
     router.get(
-      "/trips",
-      AuthMiddleware.authorizeRole("Admin"),
-      TripController.getAllTrips.bind(TripController)
-    );
-
-    router.get(
       "/trip",
       AuthMiddleware.authorizeRole("Driver"),
       TripController.getMyTrips.bind(TripController)
+    );
+
+    router.get(
+      "/trip/:id/pdf",
+      AuthMiddleware.authorizeRole("Driver"),
+      TripController.downloadMissionOrder.bind(TripController)
+    );
+
+    router.get(
+      "/trips",
+      AuthMiddleware.authorizeRole("Admin"),
+      TripController.getAllTrips.bind(TripController)
     );
 
     router.post(
@@ -35,12 +41,6 @@ class TripRoute {
       "/trip/:id",
       AuthMiddleware.authorizeRole("Admin"),
       TripController.deleteTrip.bind(TripController)
-    );
-
-    router.get(
-      "/trip/:id/pdf",
-      AuthMiddleware.authorizeRole("Driver"),
-      TripController.downloadMissionOrder.bind(TripController)
     );
 
     return router;

@@ -16,6 +16,7 @@ jest.mock("../../src/repositories/alert.repository.js", () => ({
   default: {
     findAll: jest.fn(),
     create: jest.fn(),
+    update: jest.fn(),
   },
 }));
 
@@ -52,6 +53,19 @@ describe("MaintenanceService", () => {
 
       expect(AlertRepository.findAll).toHaveBeenCalled();
       expect(result).toBe(alerts);
+    });
+  });
+
+  describe("updateAlert", () => {
+    it("updates alert with data", async () => {
+      const updateData = { status: "Resolved" };
+      const updatedAlert = { id: "a1", status: "Resolved" };
+      AlertRepository.update.mockResolvedValue(updatedAlert);
+
+      const result = await maintenanceService.updateAlert("a1", updateData);
+
+      expect(AlertRepository.update).toHaveBeenCalledWith("a1", updateData);
+      expect(result).toBe(updatedAlert);
     });
   });
 

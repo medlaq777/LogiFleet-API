@@ -6,10 +6,10 @@ class ReportRoute {
   static build() {
     const router = express.Router();
     router.use(AuthMiddleware.protect);
-    router.use(AuthMiddleware.authorizeRole("Admin"));
 
     router.get(
       "/reports/stats",
+      AuthMiddleware.authorizeRole("Admin"),
       ReportController.getStats.bind(ReportController)
     );
 

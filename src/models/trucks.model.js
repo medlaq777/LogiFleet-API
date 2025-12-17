@@ -7,6 +7,7 @@ const TruckSchema = new mongoose.Schema(
     model: { type: String, required: true },
     capacity: { type: Number, required: true, min: 1, max: 1000 },
     currentMileage: { type: Number, default: 0, min: 0 },
+    fuelLevel: { type: Number, default: 100, min: 0, max: 100 },
     fuelType: {
       type: String,
       enum: ["Diesel", "Essence", "Electrique"],

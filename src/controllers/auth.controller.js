@@ -34,5 +34,15 @@ class AuthController {
       next(err);
     }
   }
+
+  async updateProfile(req, res, next) {
+    try {
+      const userId = req.user._id;
+      const user = await this.service.updateProfile(userId, req.body);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 export default new AuthController(AuthService);

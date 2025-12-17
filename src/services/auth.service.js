@@ -82,10 +82,26 @@ class AuthService {
     return this.sanitize(user);
   }
 
+  async updateProfile(userId, updateData) {
+    const { role, ...safeUpdates } = updateData;
+
+    if (safeUpdates.password) {
+      safeUpdates.password = await BcryptUtil.hash(safeUpdates.password, 10);
+    }
+
+    const user = await this.userRepository.update(userId, safeUpdates);
+    if (!user) {
+      const err = new Error("User Not Found");
+      err.status = 404;
+      throw err;
+    }
+    return this.sanitize(user);
+  }
+
   sanitize(user) {
     if (!user || typeof user !== "object") return {};
     const raw = user?.toObject?.() ?? user;
-    const obj = raw || {};
+    const obj = raw;
     const { password, __v, ...rest } = obj;
     return rest;
   }

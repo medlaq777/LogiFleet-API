@@ -12,6 +12,11 @@ class AuthRoute {
       AuthMiddleware.protect,
       AuthController.profile.bind(AuthController)
     );
+    router.put(
+      "/profile",
+      AuthMiddleware.protect,
+      AuthController.updateProfile.bind(AuthController)
+    );
     return router;
   }
 }
