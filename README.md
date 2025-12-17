@@ -154,39 +154,54 @@ We use SonarQube to ensure code quality, security, and test coverage.
 - `POST /api/register` - Register a new user.
 - `POST /api/login` - Login and receive JWT.
 - `GET /api/profile` - Get current user profile.
+- `PUT /api/profile` - Update current user profile.
+
+### User Management
+
+- `GET /api/users` - Get all users (Admin).
+- `POST /api/users` - Create a new user (Admin).
+- `GET /api/users/:id` - Get user details (Admin).
+- `PUT /api/users/:id` - Update user details (Admin).
+- `DELETE /api/users/:id` - Delete a user (Admin).
 
 ### Trucks
 
 - `GET /api/trucks` - Get all trucks (Admin).
 - `POST /api/trucks` - Create a truck (Admin).
-- `PUT /api/trucks/:id` - Update truck details.
-- `DELETE /api/trucks/:id` - Delete a truck.
+- `PUT /api/trucks/:id` - Update truck details (Admin).
+- `DELETE /api/trucks/:id` - Delete a truck (Admin).
 
 ### Trailers
 
 - `GET /api/trailers` - Get all trailers (Admin).
-- `POST /api/trailers` - Create a trailer.
-- `PUT /api/trailers/:id` - Update trailer.
-- `DELETE /api/trailers/:id` - Delete a trailer.
+- `POST /api/trailers` - Create a trailer (Admin).
+- `PUT /api/trailers/:id` - Update trailer details (Admin).
+- `DELETE /api/trailers/:id` - Delete a trailer (Admin).
 
 ### Tires
 
 - `GET /api/tires` - Get all tires (Admin).
-- `POST /api/tires` - Register a new tire.
-- `PUT /api/tires/:id` - Update tire details.
-- `DELETE /api/tires/:id` - Delete a tire.
-- `GET /api/tires/:id/maintenance` - Check maintenance status for a specific tire.
+- `POST /api/tires` - Register a new tire (Admin).
+- `PUT /api/tires/:id` - Update tire details (Admin).
+- `DELETE /api/tires/:id` - Delete a tire (Admin).
+- `GET /api/tires/:id/maintenance` - Check maintenance status for a specific tire (Admin).
 
 ### Trips
 
 - `GET /api/trips` - Get ALL trips (Admin).
-- `GET /api/trip` - Get trips assigned to the logged-in driver.
+- `GET /api/trip` - Get trips assigned to the logged-in driver (Driver).
 - `POST /api/trip` - Create a new trip (Admin).
-- `PUT /api/trip/:id` - Update trip status (Driver).
-- `GET /api/trip/:id/pdf` - Download Mission Order PDF.
+- `PUT /api/trip/:id` - Update trip status or details (Admin/Driver).
+- `DELETE /api/trip/:id` - Delete a trip (Admin).
+- `GET /api/trip/:id/pdf` - Download Mission Order PDF (Driver).
 
-### Maintenance & Reports
+### Maintenance
 
-- `GET /api/maintenance/rules` - View maintenance rules.
-- `GET /api/maintenance/alerts` - View active alerts.
-- `GET /api/dashboard` - Get dashboard statistics (Total KM, Fuel, Maintenance).
+- `GET /api/maintenance/rules` - View maintenance rules (Admin).
+- `PUT /api/maintenance/rules/:id` - Update a maintenance rule (Admin).
+- `GET /api/maintenance/alerts` - View active alerts (Admin).
+- `PUT /api/maintenance/alerts/:id` - Update/Resolve an alert (Admin).
+
+### Reports
+
+- `GET /api/reports/stats` - Get dashboard statistics (Total KM, Fuel, Maintenance) (Admin).
