@@ -25,8 +25,8 @@ class AuthMiddleware {
           err.status = 401;
           throw err;
         }
-        const userRole = req.user.role?.toLowerCase() || "";
-        const allowedRoles = roles.map(r => r.toLowerCase());
+        const userRole = req.user.role?.toLowerCase();
+        const allowedRoles = roles.map((r) => r.toLowerCase());
 
         if (!allowedRoles.includes(userRole)) {
           const err = new Error("Forbidden");

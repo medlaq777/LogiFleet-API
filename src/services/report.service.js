@@ -19,8 +19,6 @@ class ReportService {
       stats.totalDistance > 0
         ? (stats.totalFuel / stats.totalDistance) * 100
         : 0;
-
-    // Format Fuel Data
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const fuelLabels = fuelStats.map(s => monthNames[s._id.month - 1]);
     const fuelData = fuelStats.map(s => s.totalFuel);
