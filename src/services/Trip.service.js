@@ -98,18 +98,24 @@ class TripService {
       err.status = 400;
       throw err;
     }
-    const distance = data.endMileage - trip.truckId.currentMileage;
+    const startMileage = data.startMileage || trip.startMileage || 0;
+    const distance = data.endMileage - startMileage;
+
     if (distance < 0) {
       const err = new Error("Mileage inconsistency");
       err.status = 400;
       throw err;
     }
-    await this.truckService.updateTruck(trip.truckId._id, {
-      currentMileage: data.endMileage,
-    });
+
+
+    if (data.endMileage > trip.truckId.currentMileage) {
+      await this.truckService.updateTruck(trip.truckId._id, {
+        currentMileage: data.endMileage,
+      });
+    }
 
     if (this.maintenanceRepository && this.alertRepository) {
-      const rules = await this.maintenanceRepository.findAll();
+      const rules = await this.maintenanceRepository.getAllRules();
 
       for (const rule of rules) {
         const maintenanceInterval = rule.intervalKm;

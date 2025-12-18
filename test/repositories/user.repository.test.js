@@ -21,7 +21,7 @@ describe("UserRepository", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSave = jest.fn();
-        // Default implementation for constructor: returns object with save method
+
         userModel.mockImplementation(() => ({
             save: mockSave,
         }));
@@ -97,7 +97,7 @@ describe("UserRepository", () => {
 
             await UserRepository.findAll();
 
-            expect(mockFind.skip).toHaveBeenCalledWith(0); // (1-1)*5 = 0
+            expect(mockFind.skip).toHaveBeenCalledWith(0);
             expect(mockFind.limit).toHaveBeenCalledWith(5);
         });
     });

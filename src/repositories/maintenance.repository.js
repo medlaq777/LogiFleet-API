@@ -12,6 +12,10 @@ class MaintenanceRepository {
     return await MaintenanceRule.findOne({ type });
   }
 
+  async getAllRules() {
+    return await MaintenanceRule.find();
+  }
+
   async updateRule(type, data) {
     return await MaintenanceRule.findOneAndUpdate({ type }, data, {
       new: true,

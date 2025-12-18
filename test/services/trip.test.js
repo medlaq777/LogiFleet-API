@@ -42,6 +42,7 @@ jest.mock("../../src/repositories/maintenance.repository.js", () => ({
   __esModule: true,
   default: {
     findAll: jest.fn(),
+    getAllRules: jest.fn(),
   },
 }));
 
@@ -260,14 +261,15 @@ describe("TripService", () => {
         driverId: { _id: "driver1" },
         status: "En cours",
         truckId: { _id: "truck1", currentMileage: 1000 },
+        startMileage: 1000,
       };
       TripRepository.findByIdPopulated.mockResolvedValue(trip);
 
-      const updateData = { status: "Terminé", endMileage: 1500 };
+      const updateData = { status: "Terminé", endMileage: 1500, startMileage: 1000 };
       const updatedTrip = { ...trip, ...updateData };
       TripRepository.update.mockResolvedValue(updatedTrip);
 
-      MaintenanceRepository.findAll.mockResolvedValue([
+      MaintenanceRepository.getAllRules.mockResolvedValue([
         { type: "Vidange", intervalKm: 400 },
       ]);
 
@@ -280,7 +282,7 @@ describe("TripService", () => {
       expect(TruckService.updateTruck).toHaveBeenCalledWith("truck1", {
         currentMileage: 1500,
       });
-      expect(MaintenanceRepository.findAll).toHaveBeenCalled();
+      expect(MaintenanceRepository.getAllRules).toHaveBeenCalled();
 
       expect(AlertRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -310,22 +312,40 @@ describe("TripService", () => {
     it("throws 400 when mileage distance is negative", async () => {
       const trip = {
         truckId: { _id: "truck1", currentMileage: 2000 },
+        startMileage: 2000,
       };
 
       await expect(
-        tripService._finalizeTrip(trip, { endMileage: 1500 })
+        tripService._finalizeTrip(trip, { endMileage: 1500, startMileage: 2000 })
       ).rejects.toMatchObject({
         message: "Mileage inconsistency",
         status: 400,
       });
     });
 
+    it("allows trip completion when truck mileage is ahead of trip (Fix Scenario)", async () => {
+      const trip = {
+        truckId: { _id: "truck1", currentMileage: 1500 },
+        startMileage: 1000,
+      };
+
+
+
+
+      const data = { endMileage: 1200, startMileage: 1000 };
+
+      await tripService._finalizeTrip(trip, data);
+
+      expect(TruckService.updateTruck).not.toHaveBeenCalled();
+    });
+
     it("updates truck mileage but skips maintenance when repositories are missing", async () => {
       const trip = {
         truckId: { _id: "truck1", currentMileage: 1000 },
+        startMileage: 1000,
       };
 
-      const data = { endMileage: 1500 };
+      const data = { endMileage: 1500, startMileage: 1000 };
 
       const originalMaintenanceRepo = tripService.maintenanceRepository;
       const originalAlertRepo = tripService.alertRepository;
@@ -338,7 +358,7 @@ describe("TripService", () => {
       expect(TruckService.updateTruck).toHaveBeenCalledWith("truck1", {
         currentMileage: 1500,
       });
-      expect(MaintenanceRepository.findAll).not.toHaveBeenCalled();
+      expect(MaintenanceRepository.getAllRules).not.toHaveBeenCalled();
       expect(AlertRepository.create).not.toHaveBeenCalled();
 
       tripService.maintenanceRepository = originalMaintenanceRepo;
@@ -348,11 +368,12 @@ describe("TripService", () => {
     it("does not create maintenance alert when interval is not crossed", async () => {
       const trip = {
         truckId: { _id: "truck1", currentMileage: 1000 },
+        startMileage: 1000,
       };
 
-      const data = { endMileage: 1500 };
+      const data = { endMileage: 1500, startMileage: 1000 };
 
-      MaintenanceRepository.findAll.mockResolvedValue([
+      MaintenanceRepository.getAllRules.mockResolvedValue([
         { type: "Vidange", intervalKm: 1000 },
       ]);
 

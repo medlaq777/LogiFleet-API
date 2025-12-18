@@ -72,21 +72,21 @@ describe("TripRepository", () => {
             const mockFind = {
                 populate: jest.fn().mockReturnThis(),
             };
-            // Chain populates 3 times, the last one returns a value (or a promise resolving to value) - simplified here
-            // But typically populate returns the query object again unless executed.
-            // Wait, findById returns query, populate returns query. Await executes it.
-            // Since we mock ResolvedValue on the LAST call in chain?
-            // Mongoose chaining is tricky to mock perfectly without a helper, but let's try.
 
-            // We can make populate return 'this' (the mockFind object)
-            // And then we need a way to resolve.
-            // In code: await this.model.findById(id).populate(...).populate(...).populate(...)
-            // Since it is awaited, the last populate return value is treated as a Thenable.
 
-            // Let's modify the mock setup.
-            mockFind.populate.mockReturnThis(); // Returns itself
-            // We need to make mockFind thenable or add exec/then? Mongoose queries are thenable.
-            mockFind.then = jest.fn((cb) => cb({ id: "1" })); // simplistic thenable
+
+
+
+
+
+
+
+
+
+
+            mockFind.populate.mockReturnThis();
+
+            mockFind.then = jest.fn((cb) => cb({ id: "1" }));
 
             Trip.findById.mockReturnValue(mockFind);
 

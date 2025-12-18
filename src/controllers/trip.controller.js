@@ -41,10 +41,10 @@ class TripController {
       let updatedTrip;
 
       if (isAdmin) {
-        // Admin can update any trip
+
         updatedTrip = await this.service.updateTrip(req.params.id, req.body);
       } else {
-        // Driver can only update their own trip status
+
         updatedTrip = await this.service.updateTripStatus(
           req.params.id,
           req.user._id,

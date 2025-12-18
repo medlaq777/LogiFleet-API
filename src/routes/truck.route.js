@@ -6,7 +6,7 @@ class TruckRoute {
   static build() {
     const router = express.Router();
     router.use(AuthMiddleware.protect);
-    // Remove global admin check
+
     router.get("/trucks", AuthMiddleware.authorizeRole("Admin"), TruckController.getAllTrucks.bind(TruckController));
     router.post("/trucks", AuthMiddleware.authorizeRole("Admin"), TruckController.createTruck.bind(TruckController));
     router.put(

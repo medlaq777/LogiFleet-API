@@ -54,7 +54,7 @@ class UserService {
   }
 
   async updateUser(id, updateData) {
-    // If updating password, hash it
+
     if (updateData.password) {
       updateData.password = await BcryptUtil.hash(updateData.password, 10);
     }

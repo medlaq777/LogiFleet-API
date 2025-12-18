@@ -25,7 +25,7 @@ describe("AuthMiddleware", () => {
 
             expect(JwtUtil.verifyToken).toHaveBeenCalledWith("valid_token");
             expect(req.user).toEqual(payload);
-            expect(next).toHaveBeenCalledWith(); // called without args
+            expect(next).toHaveBeenCalledWith();
         });
 
         it("calls next with 401 error if header is missing", () => {
@@ -94,7 +94,7 @@ describe("AuthMiddleware", () => {
         });
 
         it("calls next with 403 if user has no role", () => {
-            req.user = {}; // role is undefined
+            req.user = {};
             const middleware = AuthMiddleware.authorizeRole("admin");
 
             middleware(req, res, next);
@@ -105,9 +105,9 @@ describe("AuthMiddleware", () => {
         });
 
         it("calls next with error if default role processing fails (edge case)", () => {
-            // Simulate an error, e.g. req.user exists but accessing role throws?
-            // Hard to induce without modifying object property descriptors, 
-            // but we can pass a proxy or getter that throws.
+
+
+
             req.user = {
                 get role() { throw new Error("Access Error"); }
             };

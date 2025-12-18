@@ -3,8 +3,8 @@ import Tire from "../../src/models/tire.model.js";
 
 jest.mock("../../src/models/tire.model.js", () => ({
     findOne: jest.fn(),
-    create: jest.fn(), // inherited
-    findById: jest.fn(), // inherited
+    create: jest.fn(),
+    findById: jest.fn(),
 }));
 
 describe("TireRepository", () => {

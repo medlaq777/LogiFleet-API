@@ -47,7 +47,7 @@ describe("ReportService", () => {
 
       expect(result).toEqual({
         totalKm: 1000,
-        avgConsumption: 20, // (200 / 1000) * 100
+        avgConsumption: 20,
         pendingMaintenance: 3,
         users: 10,
         trucks: 5,
@@ -113,7 +113,7 @@ describe("ReportService", () => {
 
       const result = await reportService.getDashboardStats();
 
-      // Should use s._id ("UnknownType") as label since mapping doesn't exist
+
       expect(result.maintenanceChart.labels).toContain("UnknownType");
       expect(result.maintenanceChart.data).toContain(100);
     });

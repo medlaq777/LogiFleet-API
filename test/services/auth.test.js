@@ -294,7 +294,7 @@ describe("AuthService", () => {
 
   describe("updateProfile", () => {
     it("updates profile ignoring role and not hashing password if not provided", async () => {
-      const updateData = { firstName: "Jane", role: "admin" }; // role should be ignored
+      const updateData = { firstName: "Jane", role: "admin" };
       const updatedUser = {
         id: "123",
         firstName: "Jane",
@@ -310,7 +310,7 @@ describe("AuthService", () => {
 
       const result = await authService.updateProfile("123", updateData);
 
-      // Condition check: role is stripped, password not hashed
+
       expect(userRepository.update).toHaveBeenCalledWith("123", { firstName: "Jane" });
       expect(BcryptUtil.hash).not.toHaveBeenCalled();
 
@@ -332,7 +332,7 @@ describe("AuthService", () => {
 
       await authService.updateProfile("123", updateData);
 
-      // Condition check: password hashing occurred
+
       expect(BcryptUtil.hash).toHaveBeenCalledWith("newPassword", 10);
       expect(userRepository.update).toHaveBeenCalledWith("123", { password: "newHashed" });
     });
@@ -344,7 +344,7 @@ describe("AuthService", () => {
 
       await authService.updateProfile("123", updateData);
 
-      // Condition check: update called with empty object
+
       expect(userRepository.update).toHaveBeenCalledWith("123", {});
     });
 

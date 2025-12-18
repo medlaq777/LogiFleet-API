@@ -6,7 +6,7 @@ class UserRoute {
     static build() {
         const router = express.Router();
         router.use(AuthMiddleware.protect);
-        // Remove global admin check to prevent blocking other routers
+
 
         router.get("/users", AuthMiddleware.authorizeRole("Admin"), UserController.getAllUsers.bind(UserController));
         router.post("/users", AuthMiddleware.authorizeRole("Admin"), UserController.createUser.bind(UserController));

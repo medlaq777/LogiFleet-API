@@ -38,7 +38,7 @@ describe("UserRoute", () => {
   it("should define GET /users with Admin role", () => {
     expect(mockRouter.get).toHaveBeenCalledWith(
       "/users",
-      "auth_Admin", // Mocked result of authorizeRole
+      "auth_Admin",
       expect.any(Function)
     );
     expect(AuthMiddleware.authorizeRole).toHaveBeenCalledWith("Admin");

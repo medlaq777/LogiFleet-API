@@ -23,10 +23,10 @@ class ReportService {
     const fuelLabels = fuelStats.map(s => monthNames[s._id.month - 1]);
     const fuelData = fuelStats.map(s => s.totalFuel);
 
-    // Format Maintenance Data
+
     const maintenanceLabels = [];
     const maintenanceData = [];
-    // Map backend types to friendly labels if needed, or just use as is
+
     const typeMapping = {
       "Maintenance": "Repairs",
       "Pneus": "Tires",

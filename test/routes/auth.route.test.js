@@ -1,7 +1,7 @@
 import AuthRoute from "../../src/routes/auth.route.js";
 import AuthMiddleware from "../../src/middlewares/auth.middleware.js";
 
-// Mock express
+
 const mockRouter = {
     post: jest.fn(),
     get: jest.fn(),
@@ -11,7 +11,7 @@ jest.mock("express", () => ({
     Router: jest.fn(() => mockRouter),
 }));
 
-// Mock Controller
+
 jest.mock("../../src/controllers/auth.controller.js", () => ({
     register: jest.fn(),
     login: jest.fn(),
@@ -19,7 +19,7 @@ jest.mock("../../src/controllers/auth.controller.js", () => ({
     updateProfile: jest.fn(),
 }));
 
-// Mock Middleware
+
 jest.mock("../../src/middlewares/auth.middleware.js", () => ({
     protect: jest.fn(),
 }));
@@ -33,7 +33,7 @@ describe("AuthRoute", () => {
     it("should define POST /register", () => {
         expect(mockRouter.post).toHaveBeenCalledWith(
             "/register",
-            expect.any(Function) // Bound controller
+            expect.any(Function)
         );
     });
 
